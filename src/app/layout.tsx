@@ -7,8 +7,6 @@ import type { Metadata, Viewport } from 'next';
 
 import config from '_config';
 
-import Footer from '@/components/footer';
-import Navbar from '@/components/navbar/navbar';
 import RootProvider from '@/providers/root';
 
 export const metadata: Metadata = {
@@ -31,13 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
-        <RootProvider>
-          <Navbar />
-
-          {children}
-
-          <Footer />
-        </RootProvider>
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   );
