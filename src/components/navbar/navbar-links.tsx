@@ -4,19 +4,21 @@ import React, { useEffect, useState } from 'react';
 
 import { useModal } from 'connectkit';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { useAccount } from 'wagmi';
 
 import { Button } from '../ui/button';
 
-const links = [
+const routes = [
   {
     name: 'Dashboard',
-    path: '/dashboard'
+    path: '/dashboard',
+    isAuthed: true
   },
   {
     name: 'Create',
-    path: '/dashboard/create'
+    path: '/dashboard/create',
+    isAuthed: true
   }
 ];
 
@@ -25,6 +27,18 @@ export default function NavbarLinks() {
   const { setOpen } = useModal();
 
   const [desiredPath, setDesiredPath] = useState('');
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!isConnected) {
+      for (const route of routes) {
+        if (route.isAuthed && pathname === route.path) {
+          redirect('/');
+        }
+      }
+    }
+  }, [isConnected, pathname, setOpen]);
 
   useEffect(() => {
     if (isConnected && desiredPath !== '') {
@@ -35,21 +49,21 @@ export default function NavbarLinks() {
 
   return (
     <ul className='flex items-center gap-x-5'>
-      {links.map((link) => (
-        <li key={link.name}>
+      {routes.map((route) => (
+        <li key={route.name}>
           <Button variant='link' className='px-0 py-0 text-base font-semibold' asChild>
             <Link
-              href={link.path}
+              href={route.path}
               onClick={(event) => {
                 if (!isConnected) {
                   event.preventDefault();
 
                   setOpen(true);
-                  setDesiredPath(link.path);
+                  setDesiredPath(route.path);
                 }
               }}
             >
-              {link.name}
+              {route.name}
             </Link>
           </Button>
         </li>
