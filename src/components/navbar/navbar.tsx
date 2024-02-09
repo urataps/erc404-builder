@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ThemeToggle from './ui/theme-toggle';
+import ThemeToggle from '../ui/theme-toggle';
 import WalletButton from './wallet-button';
 
 export default function Navbar() {

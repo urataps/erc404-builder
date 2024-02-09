@@ -2,14 +2,14 @@
 
 import React from 'react';
 
-import type { ButtonProperties } from './ui/button';
+import type { ButtonProperties } from '../ui/button';
 
 import { useModal } from 'connectkit';
 import { useAccount } from 'wagmi';
 
 import { cn } from '@/lib/utils';
 
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 type TWalletButton = ButtonProperties;
 

@@ -8,7 +8,7 @@ import type { Metadata, Viewport } from 'next';
 import config from '_config';
 
 import Footer from '@/components/footer';
-import Navbar from '@/components/navbar';
+import Navbar from '@/components/navbar/navbar';
 import RootProvider from '@/providers/root';
 
 export const metadata: Metadata = {
