@@ -52,7 +52,12 @@ module.exports = {
       {
         checksVoidReturn: { attributes: false }
       }
-    ]
+    ],
+    '@typescript-eslint/no-floating-promises': 'off',
+    // end
+
+    // unicorn
+    'unicorn/no-null': 'off'
     // end
   }
 };
