@@ -8,6 +8,9 @@ dependencies:
   '@radix-ui/react-dropdown-menu':
     specifier: ^2.0.6
     version: 2.0.6(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-separator':
+    specifier: ^1.0.3
+    version: 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.55)(react@18.2.0)
@@ -22,7 +25,7 @@ dependencies:
     version: 2.1.0
   connectkit:
     specifier: ^1.7.1
-    version: 1.7.1(@babel/core@7.23.9)(@tanstack/react-query@5.18.1)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)(viem@2.7.8)(wagmi@2.5.6)
+    version: 1.7.1(@babel/core@7.23.9)(@tanstack/react-query@5.18.1)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)(viem@2.7.8)(wagmi@2.5.6)
   lucide-react:
     specifier: ^0.323.0
     version: 0.323.0(react@18.2.0)
@@ -3074,6 +3077,27 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@radix-ui/react-separator@1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-itYmTy/kokS21aiV5+Z56MZB54KrhPgn6eHDKkFeOLR34HMN2s8PaN47qZZAGnvupcjxHaFZnW4pQEh0BvvVuw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.9
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.55
+      '@types/react-dom': 18.2.19
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@radix-ui/react-slot@1.0.2(@types/react@18.2.55)(react@18.2.0):
     resolution: {integrity: sha512-YeTpuq4deV+6DusvVUW4ivBgnkHwECUu0BiN43L5UCDFgdhsRUWAghhTF5MbvNTPzmiFOx90asDSUjWuCNapwg==}
     peerDependencies:
@@ -4897,7 +4921,7 @@ packages:
       '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.9)
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@babel/core'
     dev: false
@@ -5382,7 +5406,7 @@ packages:
       - supports-color
     dev: false
 
-  /connectkit@1.7.1(@babel/core@7.23.9)(@tanstack/react-query@5.18.1)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)(viem@2.7.8)(wagmi@2.5.6):
+  /connectkit@1.7.1(@babel/core@7.23.9)(@tanstack/react-query@5.18.1)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)(viem@2.7.8)(wagmi@2.5.6):
     resolution: {integrity: sha512-4w4KQADXm6CdbJPH3Q9pUO0YNjXnCQ0+vUpzQvlxDYSpZg48jDmRxcXSg2jgRPlacn32ZMh1RTIuiUsy1iOJiw==}
     engines: {node: '>=12.4'}
     peerDependencies:
@@ -5402,7 +5426,7 @@ packages:
       react-transition-state: 1.1.5(react-dom@18.2.0)(react@18.2.0)
       react-use-measure: 2.1.1(react-dom@18.2.0)(react@18.2.0)
       resize-observer-polyfill: 1.5.1
-      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+      styled-components: 5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
       viem: 2.7.8(typescript@5.3.3)
       wagmi: 2.5.6(@tanstack/react-query@5.18.1)(@types/react@18.2.55)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)(typescript@5.3.3)(viem@2.7.8)
     transitivePeerDependencies:
@@ -9906,7 +9930,7 @@ packages:
     dependencies:
       object-assign: 4.1.1
       react: 18.2.0
-      react-is: 16.13.1
+      react-is: 18.2.0
     dev: false
 
   /react-style-singleton@2.2.1(@types/react@18.2.55)(react@18.2.0):
@@ -10771,7 +10795,7 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
+  /styled-components@5.3.11(@babel/core@7.23.9)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-uuzIIfnVkagcVHv9nE0VPlHPSCmXIUGKfJ42LNjxCCTDTL5sgnJ8Z7GZBq0EnLYGln77tPpEpExt2+qa+cZqSw==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -10789,7 +10813,7 @@ packages:
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-is: 16.13.1
+      react-is: 18.2.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
     transitivePeerDependencies:
