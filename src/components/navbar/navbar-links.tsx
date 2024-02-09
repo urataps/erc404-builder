@@ -7,20 +7,9 @@ import Link from 'next/link';
 import { redirect, usePathname } from 'next/navigation';
 import { useAccount } from 'wagmi';
 
-import { Button } from '../ui/button';
+import { ERoutesPath, routes } from '@/constants/routes';
 
-const routes = [
-  {
-    name: 'Dashboard',
-    path: '/dashboard',
-    isAuthed: true
-  },
-  {
-    name: 'Create',
-    path: '/dashboard/create',
-    isAuthed: true
-  }
-];
+import { Button } from '../ui/button';
 
 export default function NavbarLinks() {
   const { isConnected } = useAccount();
@@ -33,8 +22,8 @@ export default function NavbarLinks() {
   useEffect(() => {
     if (!isConnected) {
       for (const route of routes) {
-        if (route.isAuthed && pathname === route.path) {
-          redirect('/');
+        if (route.isAuthed && pathname === route.path.toString()) {
+          redirect(ERoutesPath.home);
         }
       }
     }

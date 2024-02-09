@@ -8,13 +8,14 @@ import Link from 'next/link';
 
 import logoDark from '@/assets/images/logo-dark.png';
 import logoLight from '@/assets/images/logo-light.png';
+import { ERoutesPath } from '@/constants/routes';
 
 export default function Logo() {
   const { resolvedTheme } = useTheme();
   const isThemeDark = resolvedTheme === 'dark';
 
   return (
-    <Link href='/'>
+    <Link href={ERoutesPath.home}>
       <Image
         src={isThemeDark ? logoLight : logoDark}
         alt="DeFi Builder's logo"
