@@ -10,8 +10,8 @@ import logoDark from '@/assets/images/logo-dark.png';
 import logoLight from '@/assets/images/logo-light.png';
 
 export default function Logo() {
-  const { theme } = useTheme();
-  const isThemeDark = theme === 'dark';
+  const { resolvedTheme } = useTheme();
+  const isThemeDark = resolvedTheme === 'dark';
 
   return (
     <Link href='/'>
