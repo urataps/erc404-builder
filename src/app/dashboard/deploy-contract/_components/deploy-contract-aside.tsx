@@ -35,9 +35,7 @@ export default function DeployContractAside({
       className={cn('rounded-md bg-secondary p-5 text-secondary-foreground', className)}
       {...otherProperties}
     >
-      <h3 className='mb-5 font-semibold'>
-        After you deploy your smart contract you will be able to:
-      </h3>
+      <h3 className='mb-5 font-semibold'>After you deploy your contract you will be able to:</h3>
 
       <ul className='flex flex-col gap-y-5 text-muted-foreground'>
         {actions.map((action) => (
