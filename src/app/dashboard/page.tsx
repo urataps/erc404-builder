@@ -24,7 +24,7 @@ export default function Dashboard() {
               <p>You have not created any collection yet.</p>
 
               <Button asChild>
-                <Link href={ERoutesPath.create}>{ERoutesName.create}</Link>
+                <Link href={ERoutesPath.deployContract}>{ERoutesName.create}</Link>
               </Button>
             </div>
           </div>

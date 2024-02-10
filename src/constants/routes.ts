@@ -22,7 +22,7 @@ export const routes = [
   },
   {
     name: ERoutesName.create,
-    path: ERoutesPath.create,
+    path: ERoutesPath.deployContract,
     isAuthed: true
   }
 ];
