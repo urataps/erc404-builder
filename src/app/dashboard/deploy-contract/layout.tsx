@@ -13,7 +13,7 @@ type TLayout = PropsWithChildren;
 export default function Layout({ children }: TLayout) {
   return (
     <>
-      <Navbar title='Drop a collection' backTo={ERoutesPath.create} />
+      <Navbar title='Drop a collection' backTo={ERoutesPath.dashboard} />
 
       <Main className='flex-row items-start gap-x-5'>
         <div className='w-2/3'>{children}</div>
