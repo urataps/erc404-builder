@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { Image as ImageIcon, LayoutGrid, Undo } from 'lucide-react';
-import Link from 'next/link';
+import { Image as ImageIcon, LayoutGrid } from 'lucide-react';
 
+import BackButton from '@/components/back-button';
 import Main from '@/components/main';
 import Section from '@/components/section';
-import { Button } from '@/components/ui/button';
 import { ERoutesPath } from '@/constants/routes';
 
 import CreateCallToAction from './_components/call-to-action';
@@ -14,16 +13,7 @@ import Carousel from './_components/carousel';
 export default function Create() {
   return (
     <Main className='flex-row p-0'>
-      <Button
-        variant='outline'
-        size='icon'
-        className='absolute left-10 top-10 rounded-full p-1.5'
-        asChild
-      >
-        <Link href={ERoutesPath.dashboard}>
-          <Undo />
-        </Link>
-      </Button>
+      <BackButton to={ERoutesPath.dashboard} className='absolute left-5 top-5' />
 
       <Section title='Create' className='h-full w-1/2 justify-center p-10'>
         <CreateCallToAction
