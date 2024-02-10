@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+
 'use client';
 
 import React from 'react';
@@ -28,17 +30,25 @@ enum EChain {
 }
 
 const formSchema = z.object({
-  contractName: z
+  tokenName: z
     .string({ required_error: 'is required' })
+    .trim()
     .min(2, { message: 'must contain at least 2 characters' })
     .max(50, { message: 'must contain at most 50 characters' }),
   tokenSymbol: z
     .string({ required_error: 'is required' })
+    .trim()
     .min(1, { message: 'must contain at least 1 character' })
     .max(3, { message: 'must contain at most 3 characters' })
     .refine((value) => value === value.toUpperCase(), {
       message: 'must contain only uppercase characters'
     }),
+  totalSupply: z
+    .string({ required_error: 'is required' })
+    .trim()
+    .refine((value) => !Number.isNaN(Number(value)), { message: 'must be a number' })
+    .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' })
+    .refine((value) => Number(value) <= 20_000, { message: 'must be at most 20,000' }),
   chain: z.enum([EChain.ethereum, EChain.linea])
 });
 
@@ -48,8 +58,9 @@ export default function DeployContractForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractName: '',
+      tokenName: '',
       tokenSymbol: '',
+      totalSupply: '',
       chain: EChain.ethereum
     }
   });
@@ -79,15 +90,15 @@ export default function DeployContractForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
         <FormField
           control={form.control}
-          name='contractName'
+          name='tokenName'
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Contract name</FormLabel>
-                <FormMessage className='font-semibold' />
+                <FormLabel className='text-base font-semibold'>Token name</FormLabel>
+                <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
                 <Input placeholder='My Collection Name' {...field} />
@@ -103,10 +114,26 @@ export default function DeployContractForm() {
             <FormItem>
               <div className='flex items-center gap-x-1'>
                 <FormLabel className='text-base font-semibold'>Token symbol</FormLabel>
-                <FormMessage className='font-semibold' />
+                <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
                 <Input placeholder='DFB' {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='totalSupply'
+          render={({ field }) => (
+            <FormItem>
+              <div className='flex items-center gap-x-1'>
+                <FormLabel className='text-base font-semibold'>Total supply</FormLabel>
+                <FormMessage className='text-base font-semibold' />
+              </div>
+              <FormControl>
+                <Input placeholder='1,000' {...field} />
               </FormControl>
             </FormItem>
           )}
