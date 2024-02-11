@@ -13,6 +13,7 @@ import { ERoutesName, ERoutesPath } from '@/constants/routes';
 import WithAuthentication from '@/higher-order-components/with-authentication';
 
 import Layout from '../_components/layout';
+import Collections from './_components/collections-list';
 
 const nftPartnerLinks = [
   {
@@ -26,8 +27,8 @@ export default function Dashboard() {
   return (
     <WithAuthentication>
       <Layout>
-        <Main className='flex-row items-start'>
-          <Section title='Collections'>
+        <Main className='flex-row items-start overflow-hidden'>
+          <Section title='Collections' className='h-full'>
             <div className='border-boder flex h-24 w-full items-center gap-x-5 rounded-md border p-5 transition-[background-color_transform] hover:-translate-y-1 hover:bg-secondary'>
               <div className='justify-cetner flex h-10 w-10 items-center rounded-full bg-primary p-2.5'>
                 <PencilRuler className='h-10 w-10 text-primary-foreground' />
@@ -41,6 +42,8 @@ export default function Dashboard() {
                 </Button>
               </div>
             </div>
+
+            <Collections />
           </Section>
 
           <Aside className='mt-10'>
