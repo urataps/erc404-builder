@@ -6,7 +6,6 @@ import React from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -43,6 +42,7 @@ const formSchema = z.object({
     .refine((value) => value === value.toUpperCase(), {
       message: 'must contain only uppercase characters'
     }),
+  baseUri: z.string({ required_error: 'is required' }),
   totalSupply: z
     .string({ required_error: 'is required' })
     .trim()
@@ -52,8 +52,6 @@ const formSchema = z.object({
   chain: z.enum([EChain.ethereum, EChain.linea])
 });
 
-const email = 'hello@defibuilder.com';
-
 export default function DeployContractForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,6 +59,7 @@ export default function DeployContractForm() {
       tokenName: '',
       tokenSymbol: '',
       totalSupply: '',
+      baseUri: '',
       chain: EChain.ethereum
     }
   });
@@ -141,6 +140,25 @@ export default function DeployContractForm() {
 
         <FormField
           control={form.control}
+          name='baseUri'
+          render={({ field }) => (
+            <FormItem>
+              <div className='flex items-center gap-x-1'>
+                <FormLabel className='text-base font-semibold'>Base URI</FormLabel>
+                <FormMessage className='text-base font-semibold' />
+              </div>
+              <FormControl>
+                <Input
+                  placeholder='ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name='chain'
           render={({ field }) => (
             <FormItem>
@@ -165,16 +183,19 @@ export default function DeployContractForm() {
                       </FormControl>
 
                       <div className='flex flex-col gap-y-2.5'>
-                        <Image
-                          src={chain.icon}
-                          alt={`${chain.name}'s logo`}
-                          width={30}
-                          height={30}
-                          className='rounded-full'
-                        />
-                        <FormLabel className='cursor-pointer text-base font-medium'>
-                          {chain.name}
-                        </FormLabel>
+                        <div className='flex items-center gap-x-5'>
+                          <Image
+                            src={chain.icon}
+                            alt={`${chain.name}'s logo`}
+                            width={30}
+                            height={30}
+                            className='rounded-full'
+                          />
+                          <FormLabel className='cursor-pointer text-base font-medium'>
+                            {chain.name}
+                          </FormLabel>
+                        </div>
+
                         <Badge variant='secondary' className='w-fit'>
                           {chain.badge}
                         </Badge>
@@ -191,19 +212,6 @@ export default function DeployContractForm() {
             </FormItem>
           )}
         />
-
-        <div className='my-5 text-sm'>
-          <p>Are we missing some features?</p>
-          <p>
-            Drop us an email at:{' '}
-            <Link
-              href={`mailto:${email}`}
-              className='font-medium text-primary/75 transition-colors hover:text-primary'
-            >
-              {email}
-            </Link>
-          </p>
-        </div>
 
         <Button type='submit'>Continue</Button>
       </form>
