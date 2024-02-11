@@ -110,11 +110,12 @@ export default function DeployContractForm() {
           <>
             <p>Collection deployed successfully.</p>
             {explorer ? (
-              <Link href={`${explorer.url}/address/${response}`} target='_blank'>
-                View the collection on {explorer.name}.
-              </Link>
+              <Button variant='link' className='h-min px-0 py-0' asChild>
+                <Link href={`${explorer.url}/address/${response}`} target='_blank'>
+                  View the collection on {explorer.name}.
+                </Link>
+              </Button>
             ) : null}
-            <Button variant='link' className='h-min px-0 py-0' asChild></Button>
             <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
           </>
         )
