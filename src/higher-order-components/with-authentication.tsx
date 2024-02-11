@@ -10,9 +10,9 @@ import type { WalletClient } from 'viem';
 import { redirect, usePathname } from 'next/navigation';
 import { createWalletClient, custom, verifyMessage } from 'viem';
 import { useAccount, useAccountEffect, useDisconnect } from 'wagmi';
-import { sepolia } from 'wagmi/chains';
 
 import { useToast } from '@/components/ui/toast/use-toast';
+import testnetChains from '@/config/testnet-chains';
 import { ERoutesPath, routes } from '@/constants/routes';
 
 type TWithAuthentication = PropsWithChildren;
@@ -21,7 +21,7 @@ export default function WithAuthentication({ children }: TWithAuthentication) {
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
-  const [activeChain] = useState(sepolia);
+  const [activeChain] = useState(testnetChains[0]);
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
 
   const { toast } = useToast();
@@ -30,7 +30,7 @@ export default function WithAuthentication({ children }: TWithAuthentication) {
   useEffect(() => {
     if (window.ethereum) {
       const walletClient = createWalletClient({
-        chain: sepolia,
+        chain: activeChain?.network,
         transport: custom(window.ethereum)
       });
 
