@@ -7,6 +7,7 @@ import type { Metadata, Viewport } from 'next';
 
 import config from '_config';
 
+import { Toaster } from '@/components/ui/toast/toaster';
 import RootProvider from '@/providers/root';
 
 export const metadata: Metadata = {
@@ -29,7 +30,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          {children}
+
+          <Toaster />
+        </RootProvider>
       </body>
     </html>
   );
