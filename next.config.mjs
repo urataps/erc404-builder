@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'seeklogo.com'
+        hostname: 'cryptologos.cc'
       },
       {
         protocol: 'https',
