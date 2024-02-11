@@ -14,10 +14,7 @@ export default function Footer() {
       Made with &nbsp;
       <Heart className='h-4 w-4 text-red-500' /> &nbsp; by the
       <Button variant='link' className='px-0 py-0 text-foreground' asChild>
-        <Link
-          href={website}
-          className='px-1 text-xs transition-colors hover:text-primary focus-visible:text-primary'
-        >
+        <Link href={website} className='px-1 text-xs'>
           DeFi Builder
         </Link>
       </Button>
