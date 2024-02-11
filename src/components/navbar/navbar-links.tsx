@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 
 import { useModal } from 'connectkit';
 import Link from 'next/link';
-import { redirect, usePathname } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { useAccount } from 'wagmi';
 
-import { ERoutesPath, routes } from '@/constants/routes';
+import { routes } from '@/constants/routes';
 
 import { Button } from '../ui/button';
 
@@ -16,18 +16,6 @@ export default function NavbarLinks() {
   const { setOpen } = useModal();
 
   const [desiredPath, setDesiredPath] = useState('');
-
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (!isConnected) {
-      for (const route of routes) {
-        if (route.isAuthed && pathname === route.path.toString()) {
-          redirect(ERoutesPath.home);
-        }
-      }
-    }
-  }, [isConnected, pathname, setOpen]);
 
   useEffect(() => {
     if (isConnected && desiredPath !== '') {
