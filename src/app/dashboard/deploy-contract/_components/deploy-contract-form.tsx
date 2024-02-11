@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import testnetChains from '@/config/testnet-chains';
 import { cn } from '@/lib/utils';
 
 enum EChain {
@@ -64,20 +65,10 @@ export default function DeployContractForm() {
     }
   });
 
-  const chains = [
-    {
-      name: 'Ethereum',
-      icon: 'https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png',
-      badge: 'Most popular',
-      gasEstimation: 25.69
-    },
-    {
-      name: 'Linea',
-      icon: 'https://s3.coinmarketcap.com/static-gravity/image/203ccaf09aa64c19bc8989db729468a6.jpg',
-      badge: 'Cheaper',
-      gasEstimation: 5.23
-    }
-  ];
+  const chains = testnetChains.map((chain) => ({
+    ...chain,
+    gasEstimation: 69.69
+  }));
 
   function handleRadioChange(value: EChain) {
     form.setValue('chain', value);
@@ -100,7 +91,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='My Collection Name' {...field} />
+                <Input placeholder='i.e. DeFi Builder' className='italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -116,7 +107,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='DFB' {...field} />
+                <Input placeholder='i.e. DFB' className='italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -132,7 +123,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='1,000' {...field} />
+                <Input placeholder='i.e. 1,000' className='italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -149,7 +140,8 @@ export default function DeployContractForm() {
               </div>
               <FormControl>
                 <Input
-                  placeholder='ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+                  className='italic'
                   {...field}
                 />
               </FormControl>
@@ -185,7 +177,7 @@ export default function DeployContractForm() {
                       <div className='flex flex-col gap-y-2.5'>
                         <div className='flex items-center gap-x-5'>
                           <Image
-                            src={chain.icon}
+                            src={chain.logo}
                             alt={`${chain.name}'s logo`}
                             width={30}
                             height={30}
