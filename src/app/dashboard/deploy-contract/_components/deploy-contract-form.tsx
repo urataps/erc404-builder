@@ -2,13 +2,19 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
+
+import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
+import factoryAbi from '@/artifacts/Factory.json';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +27,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useToast } from '@/components/ui/toast/use-toast';
 import testnetChains from '@/config/testnet-chains';
+import useWriteContract from '@/custom-hooks/use-write-contract';
 import { cn } from '@/lib/utils';
 
 enum EChain {
@@ -43,7 +51,10 @@ const formSchema = z.object({
     .refine((value) => value === value.toUpperCase(), {
       message: 'must contain only uppercase characters'
     }),
-  baseUri: z.string({ required_error: 'is required' }),
+  baseUri: z
+    .string({ required_error: 'is required' })
+    .trim()
+    .min(1, { message: 'must contain at least 1 character' }),
   totalSupply: z
     .string({ required_error: 'is required' })
     .trim()
@@ -54,6 +65,14 @@ const formSchema = z.object({
 });
 
 export default function DeployContractForm() {
+  const chainId = useChainId();
+  const selectedChain = useMemo(() => {
+    const chain = testnetChains.find((chain) => chain.network.id === chainId);
+    return chain ?? testnetChains[0];
+  }, [chainId]);
+  const explorer = useMemo(() => selectedChain?.network.blockExplorers.default, [selectedChain]);
+
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,17 +84,66 @@ export default function DeployContractForm() {
     }
   });
 
-  const chains = testnetChains.map((chain) => ({
-    ...chain,
-    gasEstimation: 69.69
-  }));
+  // prettier-ignore
+  const {
+    isLoading,
+    errorMessage,
+    response,
+    writeContract
+  } = useWriteContract();
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast({
+        variant: 'destructive',
+        title: 'Transaction signature',
+        description: errorMessage
+      });
+    }
+  }, [errorMessage, toast]);
+
+  useEffect(() => {
+    if (response) {
+      toast({
+        title: 'Success',
+        description: (
+          <>
+            <p>Collection deployed successfully.</p>
+            {explorer ? (
+              <Link href={`${explorer.url}/address/${response}`} target='_blank'>
+                View the collection on {explorer.name}.
+              </Link>
+            ) : null}
+            <Button variant='link' className='h-min px-0 py-0' asChild></Button>
+            <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
+          </>
+        )
+      });
+
+      form.reset();
+    }
+  }, [response, explorer, form, toast]);
 
   function handleRadioChange(value: EChain) {
+    if (isLoading) {
+      return;
+    }
+
     form.setValue('chain', value);
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const name = values.tokenName;
+    const symbol = values.tokenSymbol;
+    const baseURI = values.baseUri;
+    const totalNFTSupply = values.totalSupply;
+
+    await writeContract(
+      factoryAbi.abi as Abi,
+      'deployERC404',
+      [name, symbol, baseURI, totalNFTSupply],
+      selectedChain?.contractAddress ?? '0x'
+    );
   }
 
   return (
@@ -84,6 +152,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='tokenName'
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -91,7 +160,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. DeFi Builder' className='italic' {...field} />
+                <Input placeholder='i.e. DeFi Builder' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -100,6 +169,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='tokenSymbol'
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -107,7 +177,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. DFB' className='italic' {...field} />
+                <Input placeholder='i.e. DFB' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -116,6 +186,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='totalSupply'
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -123,7 +194,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. 1,000' className='italic' {...field} />
+                <Input placeholder='i.e. 1,000' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -132,6 +203,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='baseUri'
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -141,7 +213,7 @@ export default function DeployContractForm() {
               <FormControl>
                 <Input
                   placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
-                  className='italic'
+                  className='placeholder:italic'
                   {...field}
                 />
               </FormControl>
@@ -157,7 +229,7 @@ export default function DeployContractForm() {
               <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChain.ethereum} onValueChange={field.onChange}>
-                  {chains.map((chain) => (
+                  {testnetChains.map((chain) => (
                     <FormItem
                       key={chain.name}
                       className={cn(
@@ -165,7 +237,7 @@ export default function DeployContractForm() {
                         {
                           'border-primary': form.getValues('chain') === (chain.name as EChain),
                           'hover:border-primary/75':
-                            form.getValues('chain') !== (chain.name as EChain)
+                            !isLoading && form.getValues('chain') !== (chain.name as EChain)
                         }
                       )}
                       onClick={() => handleRadioChange(chain.name as EChain)}
@@ -191,11 +263,14 @@ export default function DeployContractForm() {
                         <Badge variant='secondary' className='w-fit'>
                           {chain.badge}
                         </Badge>
-                        <p className='text-sm text-muted-foreground'>
-                          Estimated cost to deploy contract:
-                          <span className='font-medium'>&nbsp;{chain.gasEstimation}&nbsp;</span>
-                          USD
-                        </p>
+
+                        {/* {chain.gasEstimation ? (
+                          <p className='text-sm text-muted-foreground'>
+                            Estimated cost to deploy contract:
+                            <span className='font-medium'>&nbsp;{chain.gasEstimation}&nbsp;</span>
+                            USD
+                          </p>
+                        ) : null} */}
                       </div>
                     </FormItem>
                   ))}
@@ -205,7 +280,16 @@ export default function DeployContractForm() {
           )}
         />
 
-        <Button type='submit'>Continue</Button>
+        <Button type='submit' disabled={isLoading}>
+          {isLoading ? (
+            <div className='flex items-center gap-x-2.5'>
+              <Loader2 className='h-5 w-5 animate-spin' />
+              <span>Deploying collection</span>
+            </div>
+          ) : (
+            'Deploy collection'
+          )}
+        </Button>
       </form>
     </Form>
   );
