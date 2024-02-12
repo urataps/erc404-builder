@@ -61,11 +61,11 @@ const formSchema = z.object({
 
 export default function DeployContractForm() {
   const chainId = useChainId();
-  const selectedChain = useMemo(() => {
+  const activeChain = useMemo(() => {
     const chain = testnetChains.find((chain) => chain.network.id === chainId);
     return chain ?? testnetChains[0];
   }, [chainId]);
-  const explorer = useMemo(() => selectedChain?.network.blockExplorers.default, [selectedChain]);
+  const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -138,7 +138,7 @@ export default function DeployContractForm() {
       factoryAbi.abi as Abi,
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
-      selectedChain?.contractAddress ?? '0x'
+      activeChain?.contractAddress ?? '0x'
     );
   }
 

@@ -22,11 +22,11 @@ type TCollectionItem = {
 
 export default function CollectionItem({ collectionAddress }: TCollectionItem) {
   const chainId = useChainId();
-  const selectedChain = useMemo(() => {
+  const activeChain = useMemo(() => {
     const chain = testnetChains.find((chain) => chain.network.id === chainId);
     return chain ?? testnetChains[0];
   }, [chainId]);
-  const explorer = useMemo(() => selectedChain?.network.blockExplorers.default, [selectedChain]);
+  const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
   const displayCollectionAddress =
     collectionAddress?.slice(0, 8) + '...' + collectionAddress?.slice(-8);
@@ -53,7 +53,7 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
   } = useReadContract<bigint>();
 
   useEffect(() => {
-    if (selectedChain) {
+    if (activeChain) {
       // prettier-ignore
       readName(
         erc404ManagedUri.abi as Abi,
@@ -75,7 +75,7 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
         collectionAddress as `0x${string}`
       );
     }
-  }, [selectedChain, collectionAddress, readName, readSymbol, readTotalSupply]);
+  }, [activeChain, collectionAddress, readName, readSymbol, readTotalSupply]);
 
   return (
     <div className='flex h-full w-full items-center gap-x-5'>

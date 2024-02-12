@@ -2,14 +2,14 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { PropsWithChildren } from 'react';
 import type { WalletClient } from 'viem';
 
 import { redirect, usePathname } from 'next/navigation';
 import { createWalletClient, custom, verifyMessage } from 'viem';
-import { useAccount, useAccountEffect, useDisconnect } from 'wagmi';
+import { useAccount, useAccountEffect, useChainId, useDisconnect } from 'wagmi';
 
 import { useToast } from '@/components/ui/toast/use-toast';
 import { testnetChains } from '@/config/testnet-chains';
@@ -18,10 +18,14 @@ import { ERoutesPath, routes } from '@/constants/routes';
 type TWithAuthentication = PropsWithChildren;
 
 export default function WithAuthentication({ children }: TWithAuthentication) {
+  const chainId = useChainId();
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const activeChain = useMemo(() => {
+    const chain = testnetChains.find((chain) => chain.network.id === chainId);
+    return chain ?? testnetChains[0];
+  }, [chainId]);
 
-  const [activeChain] = useState(testnetChains[0]);
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
 
   const { toast } = useToast();

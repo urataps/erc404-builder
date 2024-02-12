@@ -18,7 +18,7 @@ import CollectionItem from './collection-item';
 export default function CollectionsList() {
   const chainId = useChainId();
   const { address } = useAccount();
-  const selectedChain = useMemo(() => {
+  const activeChain = useMemo(() => {
     const chain = testnetChains.find((chain) => chain.network.id === chainId);
     return chain ?? testnetChains[0];
   }, [chainId]);
@@ -26,16 +26,16 @@ export default function CollectionsList() {
   const { isLoading, response: collections, readContract } = useReadContract<string[]>();
 
   useEffect(() => {
-    if (selectedChain && address) {
+    if (activeChain && address) {
       // prettier-ignore
       readContract(
         factoryAbi.abi as Abi,
         'deploymentsOf',
-        selectedChain.contractAddress,
+        activeChain.contractAddress,
         [address],
       );
     }
-  }, [selectedChain, address, readContract]);
+  }, [activeChain, address, readContract]);
 
   return (
     <ul className='flex h-full w-full flex-col gap-y-2.5 overflow-y-scroll rounded-md border border-border p-5'>
