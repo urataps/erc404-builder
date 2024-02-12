@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import type { Abi } from 'viem';
 
@@ -11,7 +11,7 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { createPublicClient, http } from 'viem';
+import { formatUnits } from 'viem';
 import { useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
@@ -28,8 +28,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { EChainsName, testnetChains } from '@/config/testnet-chains';
+import useReadContract from '@/custom-hooks/use-read-contract';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { cn } from '@/lib/utils';
 
@@ -62,58 +64,45 @@ const formSchema = z.object({
   chain: z.enum([EChainsName.arbitrum, EChainsName.bsc, EChainsName.linea, EChainsName.polygon])
 });
 
-// Defined separately as const here for type inference in Wagmi useReadContract
-const deploymentFeeAbi = [
-  {
-    type: 'function',
-    name: 'deploymentFee',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
-    stateMutability: 'view'
-  }
-] as const;
-
 export default function DeployContractForm() {
   const chainId = useChainId();
-  const activeChain = useMemo(() => {
-    const chain = testnetChains.find((chain) => chain.network.id === chainId);
-    return chain ?? testnetChains[0];
-  }, [chainId]);
-  const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
-  const { isPending, switchChain } = useSwitchChain();
-  const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    activeChain?.network.id
+  const activeChain = useMemo(
+    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    [chainId]
   );
-
-  async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
-    const chain = testnetChains.find((value) => value.name === chainName);
-
-    const publicClient = createPublicClient({
-      chain: chain?.network,
-      transport: http()
-    });
-
-    const deploymentFee = await publicClient.readContract({
-      abi: deploymentFeeAbi,
-      address: chain?.contractAddress ?? '0x',
-      functionName: 'deploymentFee'
-    });
-
-    // const gasPrice = await publicClient.getGasPrice();
-    // const gasCost = await publicClient.estimateContractGas({
-    //   address: activeChain?.contractAddress || '0x',
-    //   abi: factoryAbi.abi,
-    //   functionName: 'deployERC404',
-    //   args: constructorArgs,
-    //   value: deploymentFee,
-    //   account: account.address
-    // });
-    // const gasFee = gasPrice * gasCost;
-    // return { deploymentFee, gassFee }
-    return { deploymentFee };
-  }
+  const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
   const { toast } = useToast();
+  const { switchChainAsync } = useSwitchChain();
+
+  // async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
+  //   const chain = testnetChains.find((value) => value.name === chainName);
+
+  //   const publicClient = createPublicClient({
+  //     chain: chain?.network,
+  //     transport: http()
+  //   });
+
+  //   const deploymentFee = await publicClient.readContract({
+  //     abi: deploymentFeeAbi,
+  //     address: chain?.contractAddress ?? '0x',
+  //     functionName: 'deploymentFee'
+  //   });
+
+  //   // const gasPrice = await publicClient.getGasPrice();
+  //   // const gasCost = await publicClient.estimateContractGas({
+  //   //   address: activeChain?.contractAddress || '0x',
+  //   //   abi: factoryAbi.abi,
+  //   //   functionName: 'deployERC404',
+  //   //   args: constructorArgs,
+  //   //   value: deploymentFee,
+  //   //   account: account.address
+  //   // });
+  //   // const gasFee = gasPrice * gasCost;
+  //   // return { deploymentFee, gassFee }
+  //   return { deploymentFee };
+  // }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -126,25 +115,50 @@ export default function DeployContractForm() {
   });
 
   // prettier-ignore
+  const { 
+    isLoading: isDeploymentFeeLoading,
+    response: deploymentFee,
+    readContract: readDeploymentFee
+  } = useReadContract<bigint>();
+
+  // prettier-ignore
   const {
-    isLoading,
-    errorMessage,
-    response,
-    writeContract
+    isLoading: isDeployERC404Loading,
+    errorMessage: deployERC404ErrorMessage,
+    response: deployERC404Response,
+    writeContract: deployERC404
   } = useWriteContract();
 
   useEffect(() => {
-    if (errorMessage) {
+    if (activeChain) {
+      const activeChainName = activeChain.name as EChainsName;
+      form.setValue('chain', activeChainName);
+    }
+  }, [activeChain, form]);
+
+  useEffect(() => {
+    if (activeChain) {
+      // prettier-ignore
+      readDeploymentFee(
+        factoryAbi.abi as Abi,
+        'deploymentFee',
+        activeChain.contractAddress,
+      );
+    }
+  }, [activeChain, readDeploymentFee]);
+
+  useEffect(() => {
+    if (deployERC404ErrorMessage) {
       toast({
         variant: 'destructive',
         title: 'Transaction',
-        description: errorMessage
+        description: deployERC404ErrorMessage
       });
     }
-  }, [errorMessage, toast]);
+  }, [deployERC404ErrorMessage, toast]);
 
   useEffect(() => {
-    if (response) {
+    if (deployERC404Response) {
       toast({
         title: 'Success',
         description: (
@@ -152,7 +166,7 @@ export default function DeployContractForm() {
             <p>Collection deployed successfully.</p>
             {explorer ? (
               <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/address/${response}`} target='_blank'>
+                <Link href={`${explorer.url}/address/${deployERC404Response}`} target='_blank'>
                   View the collection on {explorer.name}.
                 </Link>
               </Button>
@@ -164,33 +178,47 @@ export default function DeployContractForm() {
 
       form.reset();
     }
-  }, [response, explorer, form, toast]);
+  }, [deployERC404Response, explorer, form, toast]);
 
-  function handleRadioChange(value: EChainsName) {
-    if (isLoading) {
+  async function handleRadioChange(value: EChainsName) {
+    if (isDeployERC404Loading) {
       return;
     }
 
     const chain = testnetChains.find((chain) => chain.name === value);
-    setSelectedChainId(chain?.network.id);
-    form.setValue('chain', value);
-  }
 
-  function handleSwitchChain() {
-    if (selectedChainId) switchChain({ chainId: selectedChainId });
+    if (!chain) {
+      return;
+    }
+
+    try {
+      await switchChainAsync({
+        chainId: chain.network.id
+      });
+
+      form.setValue('chain', value);
+    } catch (error: unknown) {
+      toast({
+        variant: 'destructive',
+        title: 'Switch chain',
+        description: 'You rejected the request.'
+      });
+
+      console.error('ERROR SWITCHING CHAIN', error);
+    }
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const selectedChain = testnetChains.find((chain) => chain.name === form.getValues().chain);
+    if (!deploymentFee) {
+      return;
+    }
 
     const name = values.tokenName;
     const symbol = values.tokenSymbol;
     const baseURI = values.baseUri;
     const totalNFTSupply = values.totalSupply;
 
-    const { deploymentFee } = await fetchFees(selectedChain!.name);
-
-    await writeContract(
+    await deployERC404(
       factoryAbi.abi as Abi,
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
@@ -205,7 +233,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='tokenName'
-          disabled={isLoading}
+          disabled={isDeployERC404Loading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -222,7 +250,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='tokenSymbol'
-          disabled={isLoading}
+          disabled={isDeployERC404Loading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -239,7 +267,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='totalSupply'
-          disabled={isLoading}
+          disabled={isDeployERC404Loading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -256,7 +284,7 @@ export default function DeployContractForm() {
         <FormField
           control={form.control}
           name='baseUri'
-          disabled={isLoading}
+          disabled={isDeployERC404Loading}
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
@@ -290,10 +318,11 @@ export default function DeployContractForm() {
                         {
                           'border-primary': form.getValues('chain') === (chain.name as EChainsName),
                           'hover:border-primary/75':
-                            !isLoading && form.getValues('chain') !== (chain.name as EChainsName)
+                            !isDeployERC404Loading &&
+                            form.getValues('chain') !== (chain.name as EChainsName)
                         }
                       )}
-                      onClick={() => handleRadioChange(chain.name as EChainsName)}
+                      onClick={async () => await handleRadioChange(chain.name as EChainsName)}
                     >
                       <FormControl>
                         <RadioGroupItem value={chain.name} className='sr-only' />
@@ -332,29 +361,31 @@ export default function DeployContractForm() {
             </FormItem>
           )}
         />
-        {selectedChainId === chainId ? (
-          <Button type='submit' disabled={isLoading}>
-            {isLoading ? (
-              <div className='flex items-center gap-x-2.5'>
-                <Loader2 className='h-5 w-5 animate-spin' />
-                <span>Deploying collection</span>
-              </div>
-            ) : (
-              'Deploy collection'
-            )}
-          </Button>
-        ) : (
-          <Button type='button' disabled={isLoading} onClick={handleSwitchChain}>
-            {isPending ? (
-              <div className='flex items-center gap-x-2.5'>
-                <Loader2 className='h-5 w-5 animate-spin' />
-                <span>Switching Chains</span>
-              </div>
-            ) : (
-              'Switch Chain'
-            )}
-          </Button>
-        )}
+
+        <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
+          <p className='text-muted-foreground'>Deployment fee: </p>
+          {isDeploymentFeeLoading || !deploymentFee ? (
+            <Skeleton className='h-6 w-[4.5rem]' />
+          ) : (
+            <div className='flex gap-x-1'>
+              <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
+              <span className='font-medium'>
+                {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <Button type='submit' disabled={isDeployERC404Loading}>
+          {isDeployERC404Loading ? (
+            <div className='flex items-center gap-x-2.5'>
+              <Loader2 className='h-5 w-5 animate-spin' />
+              <span>Deploying collection</span>
+            </div>
+          ) : (
+            'Deploy collection'
+          )}
+        </Button>
       </form>
     </Form>
   );
