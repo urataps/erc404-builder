@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { Abi } from 'viem';
 
@@ -11,7 +11,8 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useChainId } from 'wagmi';
+import { createPublicClient, http } from 'viem';
+import { useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
@@ -42,22 +43,35 @@ const formSchema = z.object({
     .string({ required_error: 'is required' })
     .trim()
     .min(1, { message: 'must contain at least 1 character' })
-    .max(3, { message: 'must contain at most 3 characters' })
+    .max(10, { message: 'must contain at most 10 characters' })
     .refine((value) => value === value.toUpperCase(), {
       message: 'must contain only uppercase characters'
     }),
   baseUri: z
     .string({ required_error: 'is required' })
     .trim()
-    .min(1, { message: 'must contain at least 1 character' }),
+    .min(1, { message: 'must contain at least 1 character' })
+    .refine((value) => value.endsWith('/'), {
+      message: 'must end with forward slash'
+    }),
   totalSupply: z
     .string({ required_error: 'is required' })
     .trim()
     .refine((value) => !Number.isNaN(Number(value)), { message: 'must be a number' })
-    .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' })
-    .refine((value) => Number(value) <= 20_000, { message: 'must be at most 20,000' }),
+    .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' }),
   chain: z.enum([EChainsName.arbitrum, EChainsName.bsc, EChainsName.linea, EChainsName.polygon])
 });
+
+// Defined separately as const here for type inference in Wagmi useReadContract
+const deploymentFeeAbi = [
+  {
+    type: 'function',
+    name: 'deploymentFee',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view'
+  }
+] as const;
 
 export default function DeployContractForm() {
   const chainId = useChainId();
@@ -66,6 +80,38 @@ export default function DeployContractForm() {
     return chain ?? testnetChains[0];
   }, [chainId]);
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
+  const { isPending, switchChain } = useSwitchChain();
+  const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
+    activeChain?.network.id
+  );
+
+  async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
+    const chain = testnetChains.find((value) => value.name === chainName);
+
+    const publicClient = createPublicClient({
+      chain: chain?.network,
+      transport: http()
+    });
+
+    const deploymentFee = await publicClient.readContract({
+      abi: deploymentFeeAbi,
+      address: chain?.contractAddress ?? '0x',
+      functionName: 'deploymentFee'
+    });
+
+    // const gasPrice = await publicClient.getGasPrice();
+    // const gasCost = await publicClient.estimateContractGas({
+    //   address: activeChain?.contractAddress || '0x',
+    //   abi: factoryAbi.abi,
+    //   functionName: 'deployERC404',
+    //   args: constructorArgs,
+    //   value: deploymentFee,
+    //   account: account.address
+    // });
+    // const gasFee = gasPrice * gasCost;
+    // return { deploymentFee, gassFee }
+    return { deploymentFee };
+  }
 
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -91,7 +137,7 @@ export default function DeployContractForm() {
     if (errorMessage) {
       toast({
         variant: 'destructive',
-        title: 'Transaction signature',
+        title: 'Transaction',
         description: errorMessage
       });
     }
@@ -125,20 +171,31 @@ export default function DeployContractForm() {
       return;
     }
 
+    const chain = testnetChains.find((chain) => chain.name === value);
+    setSelectedChainId(chain?.network.id);
     form.setValue('chain', value);
   }
 
+  function handleSwitchChain() {
+    if (selectedChainId) switchChain({ chainId: selectedChainId });
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const selectedChain = testnetChains.find((chain) => chain.name === form.getValues().chain);
+
     const name = values.tokenName;
     const symbol = values.tokenSymbol;
     const baseURI = values.baseUri;
     const totalNFTSupply = values.totalSupply;
 
+    const { deploymentFee } = await fetchFees(selectedChain!.name);
+
     await writeContract(
       factoryAbi.abi as Abi,
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
-      activeChain?.contractAddress ?? '0x'
+      activeChain?.contractAddress ?? '0x',
+      deploymentFee
     );
   }
 
@@ -190,7 +247,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. 1,000' className='placeholder:italic' {...field} />
+                <Input placeholder='i.e. 1000' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -208,7 +265,7 @@ export default function DeployContractForm() {
               </div>
               <FormControl>
                 <Input
-                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB/'
                   className='placeholder:italic'
                   {...field}
                 />
@@ -275,17 +332,29 @@ export default function DeployContractForm() {
             </FormItem>
           )}
         />
-
-        <Button type='submit' disabled={isLoading}>
-          {isLoading ? (
-            <div className='flex items-center gap-x-2.5'>
-              <Loader2 className='h-5 w-5 animate-spin' />
-              <span>Deploying collection</span>
-            </div>
-          ) : (
-            'Deploy collection'
-          )}
-        </Button>
+        {selectedChainId === chainId ? (
+          <Button type='submit' disabled={isLoading}>
+            {isLoading ? (
+              <div className='flex items-center gap-x-2.5'>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                <span>Deploying collection</span>
+              </div>
+            ) : (
+              'Deploy collection'
+            )}
+          </Button>
+        ) : (
+          <Button type='button' disabled={isLoading} onClick={handleSwitchChain}>
+            {isPending ? (
+              <div className='flex items-center gap-x-2.5'>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                <span>Switching Chains</span>
+              </div>
+            ) : (
+              'Switch Chain'
+            )}
+          </Button>
+        )}
       </form>
     </Form>
   );

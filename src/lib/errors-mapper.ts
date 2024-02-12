@@ -16,7 +16,7 @@ export function mapWalletErrorsToMessage(error: unknown) {
         return 'You denied transaction signature.';
       }
       case 'TransactionExecutionError': {
-        return 'You rejected the request.';
+        return 'Transaction reverted.';
       }
       default: {
         return defaultErrorMessage;

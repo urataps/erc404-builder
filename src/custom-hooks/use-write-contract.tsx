@@ -45,7 +45,7 @@ export default function useWriteContract() {
       functionName: string,
       arguments_: unknown[],
       contractAddress: `0x${string}`,
-      value = 0
+      value = 0n
     ) => {
       if (!publicClient || !walletClient) {
         return;
@@ -65,7 +65,7 @@ export default function useWriteContract() {
           args: arguments_,
           address: contractAddress,
           account: walletAddress,
-          value: parseUnits(value.toString(), 18)
+          value
         });
 
         const writeHash = await walletClient.writeContract(writeSimulation.request);
