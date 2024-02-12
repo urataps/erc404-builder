@@ -3,7 +3,7 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 
 import Aside from '@/components/aside';
-import FeatureBanner from '@/components/feature-banner';
+import FeatureRequest from '@/components/feature-request';
 import Main from '@/components/main';
 
 import NftPartners from './_components/nft-partners';
@@ -17,7 +17,7 @@ export default function Layout({ children }: TLayout) {
 
       <Aside className='w-1/3 p-10'>
         <NftPartners />
-        <FeatureBanner />
+        <FeatureRequest />
       </Aside>
     </div>
   );

@@ -11,9 +11,9 @@ import { Button } from './ui/button';
 
 const email = 'hello@defibuilder.com';
 
-type TFeatureBanner = ComponentProps<'div'>;
+type TFeatureRequest = ComponentProps<'div'>;
 
-export default function FeatureBanner({ className, ...otherProperties }: TFeatureBanner) {
+export default function FeatureRequest({ className, ...otherProperties }: TFeatureRequest) {
   return (
     <div
       className={cn(
