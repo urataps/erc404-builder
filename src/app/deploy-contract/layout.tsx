@@ -7,7 +7,7 @@ import FeatureBanner from '@/components/feature-banner';
 import Main from '@/components/main';
 import { ERoutesPath } from '@/constants/routes';
 
-import Navbar from '../_components/navbar';
+import Navbar from '../dashboard/_components/navbar';
 import DeployContractAside from './_components/deploy-contract-aside';
 
 type TLayout = PropsWithChildren;
