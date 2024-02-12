@@ -6,22 +6,19 @@ import Aside from '@/components/aside';
 import FeatureBanner from '@/components/feature-banner';
 import Main from '@/components/main';
 
-import DeployContractAside from './_components/deploy-contract-aside';
+import CollectionFeatures from './_components/collection-features';
 
 type TLayout = PropsWithChildren;
 
 export default function Layout({ children }: TLayout) {
   return (
-    <Main className='flex-row items-start gap-x-5 overflow-y-auto'>
-      <div className='w-2/3'>{children}</div>
+    <div className='flex h-full w-full flex-row items-start justify-start overflow-hidden'>
+      <Main className='w-2/3 overflow-y-auto'>{children}</Main>
 
-      <div className='mt-10 flex w-1/3 flex-col gap-y-5'>
-        <DeployContractAside />
-
-        <Aside>
-          <FeatureBanner />
-        </Aside>
-      </div>
-    </Main>
+      <Aside className='p-10'>
+        <CollectionFeatures />
+        <FeatureBanner />
+      </Aside>
+    </div>
   );
 }
