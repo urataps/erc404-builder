@@ -19,14 +19,22 @@ export default function WalletButton({ className, ...otherProperties }: TWalletB
 
   const displayAddress = address?.slice(0, 8) + '...' + address?.slice(-8);
 
+  if (!isConnected) {
+    return (
+      <Button className={cn(className)} onClick={() => setOpen(true)} {...otherProperties}>
+        Connect Wallet
+      </Button>
+    );
+  }
+
   return (
     <Button
-      variant={isConnected ? 'secondary' : 'default'}
+      variant='secondary'
       className={cn(className)}
       onClick={() => setOpen(true)}
       {...otherProperties}
     >
-      {isConnected ? displayAddress : 'Connect Wallet'}
+      {displayAddress}
     </Button>
   );
 }
