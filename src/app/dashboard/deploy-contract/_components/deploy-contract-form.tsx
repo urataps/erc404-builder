@@ -11,7 +11,8 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useChainId } from 'wagmi';
+import { formatUnits } from 'viem';
+import { useChainId, useReadContract } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
@@ -42,22 +43,35 @@ const formSchema = z.object({
     .string({ required_error: 'is required' })
     .trim()
     .min(1, { message: 'must contain at least 1 character' })
-    .max(3, { message: 'must contain at most 3 characters' })
+    .max(10, { message: 'must contain at most 10 characters' })
     .refine((value) => value === value.toUpperCase(), {
       message: 'must contain only uppercase characters'
     }),
   baseUri: z
     .string({ required_error: 'is required' })
     .trim()
-    .min(1, { message: 'must contain at least 1 character' }),
+    .min(1, { message: 'must contain at least 1 character' })
+    .refine((value) => value.endsWith('/'), {
+      message: 'must end with forward slash'
+    }),
   totalSupply: z
     .string({ required_error: 'is required' })
     .trim()
     .refine((value) => !Number.isNaN(Number(value)), { message: 'must be a number' })
-    .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' })
-    .refine((value) => Number(value) <= 20_000, { message: 'must be at most 20,000' }),
+    .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' }),
   chain: z.enum([EChainsName.arbitrum, EChainsName.bsc, EChainsName.linea, EChainsName.polygon])
 });
+
+// Defined separately as const here for type inference in Wagmi useReadContract
+const deploymentFeeAbi = [
+  {
+    type: 'function',
+    name: 'deploymentFee',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view'
+  }
+] as const;
 
 export default function DeployContractForm() {
   const chainId = useChainId();
@@ -87,11 +101,17 @@ export default function DeployContractForm() {
     writeContract
   } = useWriteContract();
 
+  const { isFetched, data: deploymentFee } = useReadContract({
+    abi: deploymentFeeAbi,
+    address: activeChain?.contractAddress,
+    functionName: 'deploymentFee'
+  });
+
   useEffect(() => {
     if (errorMessage) {
       toast({
         variant: 'destructive',
-        title: 'Transaction signature',
+        title: 'Transaction',
         description: errorMessage
       });
     }
@@ -138,7 +158,8 @@ export default function DeployContractForm() {
       factoryAbi.abi as Abi,
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
-      activeChain?.contractAddress ?? '0x'
+      activeChain?.contractAddress ?? '0x',
+      deploymentFee
     );
   }
 
@@ -190,7 +211,7 @@ export default function DeployContractForm() {
                 <FormMessage className='text-base font-semibold' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. 1,000' className='placeholder:italic' {...field} />
+                <Input placeholder='i.e. 1000' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -208,7 +229,7 @@ export default function DeployContractForm() {
               </div>
               <FormControl>
                 <Input
-                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB'
+                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB/'
                   className='placeholder:italic'
                   {...field}
                 />
@@ -276,16 +297,25 @@ export default function DeployContractForm() {
           )}
         />
 
-        <Button type='submit' disabled={isLoading}>
-          {isLoading ? (
-            <div className='flex items-center gap-x-2.5'>
-              <Loader2 className='h-5 w-5 animate-spin' />
-              <span>Deploying collection</span>
-            </div>
-          ) : (
-            'Deploy collection'
-          )}
-        </Button>
+        {/* TODO: @doinel1a Fix styling here if needed */}
+        <div className='flex items-center justify-between'>
+          <Button type='submit' disabled={isLoading || !isFetched}>
+            {isLoading ? (
+              <div className='flex items-center gap-x-2.5'>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                <span>Deploying collection</span>
+              </div>
+            ) : (
+              'Deploy collection'
+            )}
+          </Button>
+
+          <span className='ml-4'>
+            {deploymentFee === undefined
+              ? 'Loading fee...'
+              : `Deployment fee: ${formatUnits(deploymentFee, 18)} ${activeChain?.network.nativeCurrency.symbol}`}
+          </span>
+        </div>
       </form>
     </Form>
   );
