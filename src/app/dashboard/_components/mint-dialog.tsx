@@ -98,14 +98,14 @@ export default function MintDialog({
     isLoading: isMintLoading,
     errorMessage: mintErrorMessage,
     response: mintResponse,
-    writeContract: mintNFTs
+    writeContract: mint
   } = useWriteContract();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const to = values.recipientAddress;
     const erc20Amount = parseUnits(values.mintAmount, 18);
 
-    await mintNFTs(
+    await mint(
       erc404ManagedUri.abi as Abi,
       'mint',
       [to, erc20Amount],
@@ -117,9 +117,6 @@ export default function MintDialog({
     if (isMintLoading) {
       return;
     }
-
-    console.log(open ? 'OPEN' : 'CLOSE');
-    console.log('MINT RRR', mintResponse);
 
     // If dialog is closing & writeContract was triggered
     if (!open && mintResponse !== null) {
@@ -136,12 +133,12 @@ export default function MintDialog({
       <DialogTrigger asChild>
         <Button className={cn(dialogTriggerClassName)}>Mint</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[465px]'>
         <DialogHeader>
           <DialogTitle>Mint NFTs</DialogTitle>
           <DialogDescription>
             <span>
-              You have minted {formattedCurrentSupply} NFTs out of {formattedTotalSupply}.
+              You have minted {formattedCurrentSupply} out of {formattedTotalSupply} NFTs.
             </span>
             <br />
             <span>{formattedAvailableSupply} NFTs are still available to be minted.</span>
