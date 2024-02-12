@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Abi, PublicClient, WalletClient } from 'viem';
 
-import { createPublicClient, createWalletClient, custom } from 'viem';
+import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { useChainId } from 'wagmi';
 
 import { testnetChains } from '@/config/testnet-chains';
@@ -26,7 +26,7 @@ export default function useReadContract<R>() {
     if (window.ethereum) {
       const publicClient = createPublicClient({
         chain: activeChain?.network,
-        transport: custom(window.ethereum)
+        transport: http()
       });
 
       const walletClient = createWalletClient({
