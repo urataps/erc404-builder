@@ -221,7 +221,7 @@ export default function DeployContractForm() {
           control={form.control}
           name='chain'
           render={({ field }) => (
-            <FormItem>
+            <FormItem className='overflow-x-auto pb-5'>
               <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
@@ -229,7 +229,7 @@ export default function DeployContractForm() {
                     <FormItem
                       key={chain.name}
                       className={cn(
-                        'flex w-48 cursor-pointer items-center rounded-md border border-border p-2.5 transition-colors',
+                        'flex w-52 shrink-0 cursor-pointer items-center rounded-md border border-border p-2.5 transition-colors',
                         {
                           'border-primary': form.getValues('chain') === (chain.name as EChainsName),
                           'hover:border-primary/75':
