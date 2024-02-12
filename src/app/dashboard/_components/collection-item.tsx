@@ -16,6 +16,8 @@ import { testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import { cn } from '@/lib/utils';
 
+import MintDialog from './mint-dialog';
+
 type TCollectionItem = {
   collectionAddress: string;
 };
@@ -95,6 +97,10 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
     readCollectionState();
   }, [readCollectionState]);
 
+  function onMintDialogClose() {
+    readCollectionState();
+  }
+
   return (
     <div className='flex h-full w-full items-center gap-x-2.5'>
       <Column
@@ -145,6 +151,14 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
           </Link>
         </Button>
       </Column>
+
+      <MintDialog
+        collectionAddress={collectionAddress}
+        currentSupply={currentSupply}
+        totalSupply={totalSupply}
+        dialogTriggerClassName='w-[10%]'
+        onMintDialogClose={onMintDialogClose}
+      />
     </div>
   );
 }
