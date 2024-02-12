@@ -24,10 +24,10 @@ type TCollectionItem = {
 
 export default function CollectionItem({ collectionAddress }: TCollectionItem) {
   const chainId = useChainId();
-  const activeChain = useMemo(() => {
-    const chain = testnetChains.find((chain) => chain.network.id === chainId);
-    return chain ?? testnetChains[0];
-  }, [chainId]);
+  const activeChain = useMemo(
+    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    [chainId]
+  );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
   const displayCollectionAddress =
@@ -49,17 +49,22 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
 
   // prettier-ignore
   const { 
+    isLoading: isCurrentSupplyLoading,
+    response: currentSupply,
+    readContract: readCurrentSupply
+  } = useReadContract<bigint>();
+
+  // prettier-ignore
+  const { 
     isLoading: isTotalSupplyLoading,
     response: totalSupply,
     readContract: readTotalSupply
   } = useReadContract<bigint>();
 
-  // prettier-ignore
-  const { 
-    isLoading: isCurrentSupplyLoading,
-    response: currentSupply,
-    readContract: readCurrentSupply
-  } = useReadContract<bigint>();
+  const isCollectionLoading = useMemo(
+    () => isNameLoading || isSymbolLoading || isCurrentSupplyLoading || isTotalSupplyLoading,
+    [isNameLoading, isSymbolLoading, isCurrentSupplyLoading, isTotalSupplyLoading]
+  );
 
   const readCollectionState = useCallback(() => {
     if (activeChain) {
@@ -143,7 +148,7 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
         cTitle='Address'
         className='w-[25%]'
         skeletonClassName='w-[25%]'
-        isLoading={isNameLoading || isSymbolLoading || isTotalSupplyLoading}
+        isLoading={isCollectionLoading}
       >
         <Button variant='link' className='h-min px-0 py-0 text-foreground' asChild>
           <Link href={`${explorer?.url}/address/${collectionAddress}`} target='_blank'>
@@ -156,6 +161,7 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
         collectionAddress={collectionAddress}
         currentSupply={currentSupply}
         totalSupply={totalSupply}
+        isDialogTriggerDisabled={isCollectionLoading}
         dialogTriggerClassName='w-[10%]'
         onMintDialogClose={onMintDialogClose}
       />

@@ -36,6 +36,7 @@ type TMintDialog = {
   collectionAddress: string;
   currentSupply: bigint | null;
   totalSupply: bigint | null;
+  isDialogTriggerDisabled: boolean;
   dialogTriggerClassName?: string;
   onMintDialogClose(): void;
 };
@@ -44,6 +45,7 @@ export default function MintDialog({
   collectionAddress,
   currentSupply,
   totalSupply,
+  isDialogTriggerDisabled,
   dialogTriggerClassName,
   onMintDialogClose
 }: TMintDialog) {
@@ -131,7 +133,9 @@ export default function MintDialog({
   return (
     <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogTrigger asChild>
-        <Button className={cn(dialogTriggerClassName)}>Mint</Button>
+        <Button className={cn(dialogTriggerClassName)} disabled={isDialogTriggerDisabled}>
+          Mint
+        </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[465px]'>
         <DialogHeader>
