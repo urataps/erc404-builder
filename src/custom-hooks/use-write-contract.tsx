@@ -1,16 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Abi, PublicClient, WalletClient } from 'viem';
 
 import { createPublicClient, createWalletClient, custom, parseUnits } from 'viem';
+import { useChainId } from 'wagmi';
 
 import { testnetChains } from '@/config/testnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 export default function useWriteContract() {
+  const chainId = useChainId();
+  const activeChain = useMemo(() => {
+    const chain = testnetChains.find((chain) => chain.network.id === chainId);
+    return chain ?? testnetChains[0];
+  }, [chainId]);
+
   const [publicClient, setPublicClient] = useState<PublicClient | null>(null);
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
-  const [activeChain] = useState(testnetChains[0]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
