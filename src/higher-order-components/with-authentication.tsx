@@ -12,7 +12,7 @@ import { createWalletClient, custom, verifyMessage } from 'viem';
 import { useAccount, useAccountEffect, useDisconnect } from 'wagmi';
 
 import { useToast } from '@/components/ui/toast/use-toast';
-import testnetChains from '@/config/testnet-chains';
+import { testnetChains } from '@/config/testnet-chains';
 import { ERoutesPath, routes } from '@/constants/routes';
 
 type TWithAuthentication = PropsWithChildren;

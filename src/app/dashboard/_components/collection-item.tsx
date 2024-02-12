@@ -12,7 +12,7 @@ import { useChainId } from 'wagmi';
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import testnetChains from '@/config/testnet-chains';
+import { testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import { cn } from '@/lib/utils';
 

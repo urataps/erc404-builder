@@ -8,7 +8,7 @@ import type { Chain } from 'wagmi/chains';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import { createConfig, WagmiProvider } from 'wagmi';
 
-import testnetChains from '@/config/testnet-chains';
+import { testnetChains } from '@/config/testnet-chains';
 
 import QueryClientProvider from './query-client';
 

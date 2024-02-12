@@ -2,28 +2,35 @@ import { arbitrumSepolia, bscTestnet, lineaTestnet, polygonMumbai } from 'wagmi/
 
 import baseChains from './base-chains';
 
+enum EChainsName {
+  arbitrum = 'Arbitrum Sepolia',
+  bsc = 'BSC Testnet',
+  linea = 'Linea Goerli',
+  polygon = 'Polygon Mumbai'
+}
+
 const testnetChainsConfig = {
   Arbitrum: {
     ...baseChains.Arbitrum,
-    name: 'Arbitrum Sepolia',
+    name: EChainsName.arbitrum,
     network: arbitrumSepolia,
     contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
   },
   BSC: {
     ...baseChains.BSC,
-    name: 'BSC Testnet',
+    name: EChainsName.bsc,
     network: bscTestnet,
     contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
   },
   Linea: {
     ...baseChains.Linea,
-    name: 'Linea Goerli',
+    name: EChainsName.linea,
     network: lineaTestnet,
     contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
   },
   Polygon: {
     ...baseChains.Polygon,
-    name: 'Polygon Mumbai',
+    name: EChainsName.polygon,
     network: polygonMumbai,
     contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
   }
@@ -31,4 +38,4 @@ const testnetChainsConfig = {
 
 const testnetChains = Object.values(testnetChainsConfig);
 
-export default testnetChains;
+export { EChainsName, testnetChains };

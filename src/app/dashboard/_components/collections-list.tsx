@@ -10,7 +10,7 @@ import { useAccount, useChainId } from 'wagmi';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
-import testnetChains from '@/config/testnet-chains';
+import { testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 
 import CollectionItem from './collection-item';

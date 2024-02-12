@@ -4,7 +4,7 @@ import type { Abi, PublicClient, WalletClient } from 'viem';
 
 import { createPublicClient, createWalletClient, custom, parseUnits } from 'viem';
 
-import testnetChains from '@/config/testnet-chains';
+import { testnetChains } from '@/config/testnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 export default function useWriteContract() {

@@ -28,14 +28,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/toast/use-toast';
-import testnetChains from '@/config/testnet-chains';
+import { EChainsName, testnetChains } from '@/config/testnet-chains';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { cn } from '@/lib/utils';
-
-enum EChain {
-  ethereum = 'Ethereum',
-  linea = 'Linea'
-}
 
 const formSchema = z.object({
   tokenName: z
@@ -61,7 +56,7 @@ const formSchema = z.object({
     .refine((value) => !Number.isNaN(Number(value)), { message: 'must be a number' })
     .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' })
     .refine((value) => Number(value) <= 20_000, { message: 'must be at most 20,000' }),
-  chain: z.enum([EChain.ethereum, EChain.linea])
+  chain: z.enum([EChainsName.arbitrum, EChainsName.bsc, EChainsName.linea, EChainsName.polygon])
 });
 
 export default function DeployContractForm() {
@@ -80,7 +75,7 @@ export default function DeployContractForm() {
       tokenSymbol: '',
       totalSupply: '',
       baseUri: '',
-      chain: EChain.ethereum
+      chain: EChainsName.arbitrum
     }
   });
 
@@ -125,7 +120,7 @@ export default function DeployContractForm() {
     }
   }, [response, explorer, form, toast]);
 
-  function handleRadioChange(value: EChain) {
+  function handleRadioChange(value: EChainsName) {
     if (isLoading) {
       return;
     }
@@ -229,19 +224,19 @@ export default function DeployContractForm() {
             <FormItem>
               <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
-                <RadioGroup defaultValue={EChain.ethereum} onValueChange={field.onChange}>
+                <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
                   {testnetChains.map((chain) => (
                     <FormItem
                       key={chain.name}
                       className={cn(
                         'flex w-48 cursor-pointer items-center rounded-md border border-border p-2.5 transition-colors',
                         {
-                          'border-primary': form.getValues('chain') === (chain.name as EChain),
+                          'border-primary': form.getValues('chain') === (chain.name as EChainsName),
                           'hover:border-primary/75':
-                            !isLoading && form.getValues('chain') !== (chain.name as EChain)
+                            !isLoading && form.getValues('chain') !== (chain.name as EChainsName)
                         }
                       )}
-                      onClick={() => handleRadioChange(chain.name as EChain)}
+                      onClick={() => handleRadioChange(chain.name as EChainsName)}
                     >
                       <FormControl>
                         <RadioGroupItem value={chain.name} className='sr-only' />
