@@ -43,7 +43,7 @@ export default function useWriteContract() {
     async (
       abi: Abi,
       functionName: string,
-      arguments_: string[],
+      arguments_: unknown[],
       contractAddress: `0x${string}`,
       value = 0
     ) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import type { ComponentProps } from 'react';
 import type { Abi } from 'viem';
@@ -15,6 +15,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import { cn } from '@/lib/utils';
+
+import MintDialog from './mint-dialog';
 
 type TCollectionItem = {
   collectionAddress: string;
@@ -52,7 +54,14 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
     readContract: readTotalSupply
   } = useReadContract<bigint>();
 
-  useEffect(() => {
+  // prettier-ignore
+  const { 
+    isLoading: isCurrentSupplyLoading,
+    response: currentSupply,
+    readContract: readCurrentSupply
+  } = useReadContract<bigint>();
+
+  const readCollectionState = useCallback(() => {
     if (activeChain) {
       // prettier-ignore
       readName(
@@ -69,20 +78,35 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
       );
 
       // prettier-ignore
+      readCurrentSupply(
+        erc404ManagedUri.abi as Abi,
+        'currentSupply',
+        collectionAddress as `0x${string}`
+      );
+
+      // prettier-ignore
       readTotalSupply(
         erc404ManagedUri.abi as Abi,
         'totalSupply',
         collectionAddress as `0x${string}`
       );
     }
-  }, [activeChain, collectionAddress, readName, readSymbol, readTotalSupply]);
+  }, [activeChain, collectionAddress, readName, readSymbol, readCurrentSupply, readTotalSupply]);
+
+  useEffect(() => {
+    readCollectionState();
+  }, [readCollectionState]);
+
+  function onMintDialogClose() {
+    readCollectionState();
+  }
 
   return (
-    <div className='flex h-full w-full items-center gap-x-5'>
+    <div className='flex h-full w-full items-center gap-x-2.5'>
       <Column
         cTitle='Collection name'
-        className='w-[20%]'
-        skeletonClassName='w-[20%]'
+        className='w-[17.5%]'
+        skeletonClassName='w-[17.5%]'
         isLoading={isNameLoading}
       >
         {name}
@@ -90,17 +114,26 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
 
       <Column
         cTitle='Collection symbol'
-        className='w-[20%]'
-        skeletonClassName='w-[20%]'
+        className='w-[17.5%]'
+        skeletonClassName='w-[17.5%]'
         isLoading={isSymbolLoading}
       >
         {symbol}
       </Column>
 
       <Column
+        cTitle='Current supply'
+        className='w-[15%]'
+        skeletonClassName='w-[15%]'
+        isLoading={isCurrentSupplyLoading}
+      >
+        {formatUnits(currentSupply ?? 0n, 18)}
+      </Column>
+
+      <Column
         cTitle='Total supply'
-        className='w-[20%]'
-        skeletonClassName='w-[20%]'
+        className='w-[15%]'
+        skeletonClassName='w-[15%]'
         isLoading={isTotalSupplyLoading}
       >
         {formatUnits(totalSupply ?? 0n, 18)}
@@ -108,8 +141,8 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
 
       <Column
         cTitle='Address'
-        className='w-[40%]'
-        skeletonClassName='w-[40%]'
+        className='w-[25%]'
+        skeletonClassName='w-[25%]'
         isLoading={isNameLoading || isSymbolLoading || isTotalSupplyLoading}
       >
         <Button variant='link' className='h-min px-0 py-0 text-foreground' asChild>
@@ -118,22 +151,30 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
           </Link>
         </Button>
       </Column>
+
+      <MintDialog
+        collectionAddress={collectionAddress}
+        currentSupply={currentSupply}
+        totalSupply={totalSupply}
+        dialogTriggerClassName='w-[10%]'
+        onMintDialogClose={onMintDialogClose}
+      />
     </div>
   );
 }
 
 type TColumn = ComponentProps<'div'> & {
-  isLoading: boolean;
   cTitle: string;
   skeletonClassName: string;
+  isLoading: boolean;
 };
 
 function Column({
-  isLoading,
   cTitle,
   children,
   className,
   skeletonClassName,
+  isLoading,
   ...otherProperties
 }: TColumn) {
   if (isLoading) {
