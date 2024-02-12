@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { Abi } from 'viem';
 
@@ -80,7 +80,10 @@ export default function DeployContractForm() {
     return chain ?? testnetChains[0];
   }, [chainId]);
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
-  const { switchChainAsync } = useSwitchChain();
+  const { isPending, switchChain } = useSwitchChain();
+  const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
+    activeChain?.network.id
+  );
 
   async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
     const chain = testnetChains.find((value) => value.name === chainName);
@@ -168,14 +171,17 @@ export default function DeployContractForm() {
       return;
     }
 
+    const chain = testnetChains.find((chain) => chain.name === value);
+    setSelectedChainId(chain?.network.id);
     form.setValue('chain', value);
+  }
+
+  function handleSwitchChain() {
+    if (selectedChainId) switchChain({ chainId: selectedChainId });
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const selectedChain = testnetChains.find((chain) => chain.name === form.getValues().chain);
-    if (activeChain?.name !== selectedChain?.name && selectedChain) {
-      await switchChainAsync({ chainId: selectedChain.network.id });
-    }
 
     const name = values.tokenName;
     const symbol = values.tokenSymbol;
@@ -326,8 +332,7 @@ export default function DeployContractForm() {
             </FormItem>
           )}
         />
-
-        <div className='flex items-center justify-between'>
+        {selectedChainId === chainId ? (
           <Button type='submit' disabled={isLoading}>
             {isLoading ? (
               <div className='flex items-center gap-x-2.5'>
@@ -338,7 +343,18 @@ export default function DeployContractForm() {
               'Deploy collection'
             )}
           </Button>
-        </div>
+        ) : (
+          <Button type='button' disabled={isLoading} onClick={handleSwitchChain}>
+            {isPending ? (
+              <div className='flex items-center gap-x-2.5'>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                <span>Switching Chains</span>
+              </div>
+            ) : (
+              'Switch Chain'
+            )}
+          </Button>
+        )}
       </form>
     </Form>
   );
