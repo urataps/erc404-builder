@@ -11,8 +11,8 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { formatUnits } from 'viem';
-import { useChainId, useReadContract } from 'wagmi';
+import { createPublicClient, http } from 'viem';
+import { useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
@@ -80,6 +80,35 @@ export default function DeployContractForm() {
     return chain ?? testnetChains[0];
   }, [chainId]);
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
+  const { switchChainAsync } = useSwitchChain();
+
+  async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
+    const chain = testnetChains.find((value) => value.name === chainName);
+
+    const publicClient = createPublicClient({
+      chain: chain?.network,
+      transport: http()
+    });
+
+    const deploymentFee = await publicClient.readContract({
+      abi: deploymentFeeAbi,
+      address: chain?.contractAddress ?? '0x',
+      functionName: 'deploymentFee'
+    });
+
+    // const gasPrice = await publicClient.getGasPrice();
+    // const gasCost = await publicClient.estimateContractGas({
+    //   address: activeChain?.contractAddress || '0x',
+    //   abi: factoryAbi.abi,
+    //   functionName: 'deployERC404',
+    //   args: constructorArgs,
+    //   value: deploymentFee,
+    //   account: account.address
+    // });
+    // const gasFee = gasPrice * gasCost;
+    // return { deploymentFee, gassFee }
+    return { deploymentFee };
+  }
 
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -100,12 +129,6 @@ export default function DeployContractForm() {
     response,
     writeContract
   } = useWriteContract();
-
-  const { isFetched, data: deploymentFee } = useReadContract({
-    abi: deploymentFeeAbi,
-    address: activeChain?.contractAddress,
-    functionName: 'deploymentFee'
-  });
 
   useEffect(() => {
     if (errorMessage) {
@@ -149,10 +172,17 @@ export default function DeployContractForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const selectedChain = testnetChains.find((chain) => chain.name === form.getValues().chain);
+    if (activeChain?.name !== selectedChain?.name && selectedChain) {
+      await switchChainAsync({ chainId: selectedChain.network.id });
+    }
+
     const name = values.tokenName;
     const symbol = values.tokenSymbol;
     const baseURI = values.baseUri;
     const totalNFTSupply = values.totalSupply;
+
+    const { deploymentFee } = await fetchFees(selectedChain!.name);
 
     await writeContract(
       factoryAbi.abi as Abi,
@@ -297,9 +327,8 @@ export default function DeployContractForm() {
           )}
         />
 
-        {/* TODO: @doinel1a Fix styling here if needed */}
         <div className='flex items-center justify-between'>
-          <Button type='submit' disabled={isLoading || !isFetched}>
+          <Button type='submit' disabled={isLoading}>
             {isLoading ? (
               <div className='flex items-center gap-x-2.5'>
                 <Loader2 className='h-5 w-5 animate-spin' />
@@ -309,12 +338,6 @@ export default function DeployContractForm() {
               'Deploy collection'
             )}
           </Button>
-
-          <span className='ml-4'>
-            {deploymentFee === undefined
-              ? 'Loading fee...'
-              : `Deployment fee: ${formatUnits(deploymentFee, 18)} ${activeChain?.network.nativeCurrency.symbol}`}
-          </span>
         </div>
       </form>
     </Form>

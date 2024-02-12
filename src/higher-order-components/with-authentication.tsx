@@ -90,7 +90,7 @@ function generateTACMessage(address: string) {
   return `
 Welcome to DeFi Builder!
   
-Click to sign in and accept DeFi Builder Terms and Conditions (https://defibuilder.comterms-and-conditions) and Privacy Policy (https://defibuilder.com/privacy-policy/).
+Click to sign in and accept DeFi Builder Terms and Conditions (https://defibuilder.com/terms-and-conditions) and Privacy Policy (https://defibuilder.com/privacy-policy/).
   
 This request will not trigger a blockchain transaction or cost any gas fees.
   
