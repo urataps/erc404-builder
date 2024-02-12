@@ -27,7 +27,7 @@ export default function Create() {
           icon={ImageIcon}
           title='Mint an NFT'
           description='Create a collection and mint NFTs directly to your wallet.'
-          href={ERoutesPath.mint}
+          href={ERoutesPath.deployContract}
         />
       </Section>
 

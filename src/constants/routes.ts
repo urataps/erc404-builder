@@ -1,14 +1,12 @@
 export enum ERoutesName {
   home = 'Home',
   dashboard = 'Dashboard',
-  create = 'Create',
   deployContract = 'Deploy'
 }
 
 export enum ERoutesPath {
   home = '/',
   dashboard = '/dashboard',
-  create = '/dashboard/create',
   deployContract = '/deploy-contract'
 }
 
