@@ -1,8 +1,5 @@
-'use client';
-
 import React from 'react';
 
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,16 +8,21 @@ import logoLight from '@/assets/images/logo-light.png';
 import { ERoutesPath } from '@/constants/routes';
 
 export default function Logo() {
-  const { resolvedTheme } = useTheme();
-  const isThemeDark = resolvedTheme === 'dark';
-
   return (
     <Link href={ERoutesPath.home}>
       <Image
-        src={isThemeDark ? logoLight : logoDark}
+        src={logoLight}
         alt="DeFi Builder's logo"
         width={190}
         height={30}
+        className='hidden dark:block'
+      />
+      <Image
+        src={logoDark}
+        alt="DeFi Builder's logo"
+        width={190}
+        height={30}
+        className='block dark:hidden'
       />
     </Link>
   );
