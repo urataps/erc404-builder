@@ -2,16 +2,14 @@ export enum ERoutesName {
   home = 'Home',
   dashboard = 'Dashboard',
   create = 'Create',
-  deployContract = 'Deploy',
-  mint = 'Mint'
+  deployContract = 'Deploy'
 }
 
 export enum ERoutesPath {
   home = '/',
   dashboard = '/dashboard',
   create = '/dashboard/create',
-  deployContract = '/deploy-contract',
-  mint = '/dashboard/mint'
+  deployContract = '/deploy-contract'
 }
 
 export const routes = [
