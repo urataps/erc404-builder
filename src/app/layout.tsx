@@ -7,6 +7,8 @@ import type { Metadata, Viewport } from 'next';
 
 import config from '_config';
 
+import Footer from '@/components/footer';
+import Navbar from '@/components/navbar/navbar';
 import { Toaster } from '@/components/ui/toast/toaster';
 import RootProvider from '@/providers/root';
 
@@ -31,7 +33,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body>
         <RootProvider>
+          <Navbar />
+
           {children}
+
+          <Footer />
 
           <Toaster />
         </RootProvider>

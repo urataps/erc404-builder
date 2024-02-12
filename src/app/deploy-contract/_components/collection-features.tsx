@@ -4,15 +4,11 @@ import type { ComponentProps } from 'react';
 
 import { Brush, NotepadText, Sparkles } from 'lucide-react';
 
-import Aside from '@/components/aside';
 import { cn } from '@/lib/utils';
 
-type TDeployContractAside = ComponentProps<'aside'>;
+type TCollectionFeatures = ComponentProps<'div'>;
 
-export default function DeployContractAside({
-  className,
-  ...otherProperties
-}: TDeployContractAside) {
+export default function CollectionFeatures({ className, ...otherProperties }: TCollectionFeatures) {
   const actions = [
     {
       icon: NotepadText,
@@ -32,7 +28,10 @@ export default function DeployContractAside({
   ];
 
   return (
-    <Aside className={cn(className)} {...otherProperties}>
+    <div
+      className={cn('rounded-md bg-secondary p-5 text-secondary-foreground', className)}
+      {...otherProperties}
+    >
       <h3 className='mb-5 font-semibold'>After you deploy your contract you will be able to:</h3>
 
       <ul className='flex flex-col gap-y-5 text-muted-foreground'>
@@ -48,6 +47,6 @@ export default function DeployContractAside({
           </li>
         ))}
       </ul>
-    </Aside>
+    </div>
   );
 }

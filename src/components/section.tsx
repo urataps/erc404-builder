@@ -23,7 +23,7 @@ export default function Section({
     <section
       id={id}
       aria-labelledby={headerId}
-      className={cn('flex w-full max-w-7xl flex-col gap-y-5 p-5', className)}
+      className={cn('flex w-full max-w-7xl flex-col gap-y-5', className)}
       {...otherProperties}
     >
       <header>
