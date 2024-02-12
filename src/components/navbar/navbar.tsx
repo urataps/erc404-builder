@@ -1,10 +1,17 @@
 import React from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { Separator } from '../ui/separator';
+import { Skeleton } from '../ui/skeleton';
 import ThemeToggle from '../ui/theme-toggle';
 import Logo from './logo';
 import NavbarLinks from './navbar-links';
-import WalletButton from './wallet-button';
+
+const WalletButton = dynamic(() => import('./wallet-button'), {
+  ssr: false,
+  loading: () => <Skeleton className='h-10 w-[11.25rem]' />
+});
 
 export default function Navbar() {
   return (
