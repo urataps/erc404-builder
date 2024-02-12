@@ -6,7 +6,7 @@ import Aside from '@/components/aside';
 import FeatureBanner from '@/components/feature-banner';
 import Main from '@/components/main';
 
-import CollectionFeatures from './_components/collection-features';
+import NftPartners from './_components/nft-partners';
 
 type TLayout = PropsWithChildren;
 
@@ -16,7 +16,7 @@ export default function Layout({ children }: TLayout) {
       <Main className='w-2/3 overflow-y-auto'>{children}</Main>
 
       <Aside className='w-1/3 p-10'>
-        <CollectionFeatures />
+        <NftPartners />
         <FeatureBanner />
       </Aside>
     </div>
