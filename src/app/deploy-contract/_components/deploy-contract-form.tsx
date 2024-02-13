@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { EChainsName, testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
@@ -75,7 +76,7 @@ export default function DeployContractForm() {
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
-  const account = useAccount();
+  const { address } = useAccount();
   const { toast } = useToast();
   const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
 
@@ -119,7 +120,7 @@ export default function DeployContractForm() {
   }, [activeChain, form]);
 
   useEffect(() => {
-    if (activeChain && !isSwitchLoading && account.address) {
+    if (activeChain && !isSwitchLoading && address) {
       // prettier-ignore
       readDeploymentFee(
         factoryAbi.abi as Abi,
@@ -131,10 +132,10 @@ export default function DeployContractForm() {
         factoryAbi.abi as Abi,
         'deploymentFeeForUser',
         activeChain.contractAddress,
-        [account.address]
+        [address]
       );
     }
-  }, [activeChain, isSwitchLoading, account.address, readUserDeploymentFee, readDeploymentFee]);
+  }, [activeChain, isSwitchLoading, address, readUserDeploymentFee, readDeploymentFee]);
 
   useEffect(() => {
     if (deployERC404Error) {
@@ -168,8 +169,17 @@ export default function DeployContractForm() {
       });
 
       form.reset();
+
+      if (activeChain && address) {
+        readUserDeploymentFee(
+          factoryAbi.abi as Abi,
+          'deploymentFeeForUser',
+          activeChain.contractAddress,
+          [address]
+        );
+      }
     }
-  }, [deployERC404Response, explorer, form, toast]);
+  }, [activeChain, address, deployERC404Response, explorer, form, toast, readUserDeploymentFee]);
 
   async function handleRadioChange(value: EChainsName) {
     if (isDeployERC404Loading) {
@@ -349,31 +359,39 @@ export default function DeployContractForm() {
           )}
         />
 
-        <div className='relative mt-5 flex items-center justify-between rounded-md border-2 border-destructive p-5'>
-          {userDeploymentFee === 0n && (
-            <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-              Deployment fee: 0.00 ETH
-            </span>
-          )}
+        <div
+          className={cn('flex items-center justify-between rounded-md', {
+            'relative mt-5 border-2 border-destructive p-5 ': userDeploymentFee === 0n
+          })}
+        >
+          {userDeploymentFee === 0n ? (
+            <>
+              <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+                Deployment fee: 0.00 ETH
+              </span>
 
-          {userDeploymentFee === 0n && (
-            <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-              LIMITED TIME OFFER
-            </span>
-          )}
+              <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+                LIMITED TIME OFFER
+              </span>
+            </>
+          ) : null}
 
           <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
             <p className='text-muted-foreground'>Deployment fee: </p>
-            <div className='relative flex gap-x-1'>
-              <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
-              <span className='font-medium'>
-                {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
-              </span>
+            {isDeploymentFeeLoading ? (
+              <Skeleton className='h-6 w-[4.5rem]' />
+            ) : (
+              <div className='relative flex gap-x-1'>
+                <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
+                <span className='font-medium'>
+                  {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
+                </span>
 
-              {userDeploymentFee === 0n && (
-                <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
-              )}
-            </div>
+                {userDeploymentFee === 0n && (
+                  <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+                )}
+              </div>
+            )}
           </div>
 
           {userDeploymentFee === 0n && <Countdown />}
