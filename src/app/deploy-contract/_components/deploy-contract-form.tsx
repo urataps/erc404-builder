@@ -90,6 +90,7 @@ export default function DeployContractForm() {
     }
   });
 
+  // prettier-ignore
   const {
     isLoading: isDeploymentFeeLoading,
     response: deploymentFee,
@@ -98,6 +99,7 @@ export default function DeployContractForm() {
 
   // prettier-ignore
   const {
+    isLoading: isUserDeploymentFeeLoading,
     response: userDeploymentFee,
     readContract: readUserDeploymentFee
   } = useReadContract<bigint>();
@@ -348,13 +350,17 @@ export default function DeployContractForm() {
         />
 
         <div className='relative mt-5 flex items-center justify-between rounded-md border-2 border-destructive p-5'>
-          <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-            Deployment fee: 0.00 ETH
-          </span>
+          {userDeploymentFee === 0n && (
+            <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+              Deployment fee: 0.00 ETH
+            </span>
+          )}
 
-          <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-            LIMITED TIME OFFER
-          </span>
+          {userDeploymentFee === 0n && (
+            <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+              LIMITED TIME OFFER
+            </span>
+          )}
 
           <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
             <p className='text-muted-foreground'>Deployment fee: </p>
@@ -364,23 +370,13 @@ export default function DeployContractForm() {
                 {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
               </span>
 
-              <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+              {userDeploymentFee === 0n && (
+                <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+              )}
             </div>
-
-            {/* ACTUAL CODE TO DISPLAY DEPLOYMENT FEE */}
-            {/* {isDeploymentFeeLoading ? (
-              <Skeleton className='h-6 w-[4.5rem]' />
-            ) : (
-              <div className='flex gap-x-1'>
-                <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
-                <span className='font-medium'>
-                  {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
-                </span>
-              </div>
-            )} */}
           </div>
 
-          <Countdown />
+          {userDeploymentFee === 0n && <Countdown />}
 
           <Button type='submit' disabled={isDeployERC404Loading}>
             {isDeployERC404Loading ? (
