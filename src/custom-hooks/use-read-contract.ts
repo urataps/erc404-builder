@@ -10,10 +10,10 @@ import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 export default function useReadContract<R>() {
   const chainId = useChainId();
-  const activeChain = useMemo(() => {
-    const chain = testnetChains.find((chain) => chain.network.id === chainId);
-    return chain ?? testnetChains[0];
-  }, [chainId]);
+  const activeChain = useMemo(
+    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    [chainId]
+  );
 
   const [publicClient, setPublicClient] = useState<PublicClient | null>(null);
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
