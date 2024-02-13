@@ -1,10 +1,9 @@
 const config = {
   metadata: {
-    title: 'Next.js TypeScript & Shadcn/ui — Template',
+    title: 'DeFi Builder - Free ERC404 token generator',
     description:
-      'Boilerplate template designed to quickly bootstrap a Next.js Web App, SPA, website or landing page with TypeScript, Shadcn/ui, TailwindCSS, ESLint, Husky and much more in just 30 seconds.',
-    keywords:
-      'next.js, next.js-template, next.js-boilerplate, typescript, shadcn/ui, tailwindcss, eslint, prettier, husky, commitlint, lint-staged'
+      'Create a free ERC404 token and deploy on most blockchains. Support Binance Smart Chain, Arbitrum, Linea and Polygon. Deploy free ERC404 token using metamask wallet.',
+    keywords: 'free ERC404 token, what is ERC404, how to deploy ERC404, ERC404 token'
   },
   server: {
     host: 'localhost',
