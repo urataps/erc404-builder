@@ -6,6 +6,7 @@ import React from 'react';
 import type { Metadata, Viewport } from 'next';
 
 import config from '_config';
+import { Analytics } from '@vercel/analytics/react';
 
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar/navbar';
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <Footer />
 
+          <Analytics />
           <Toaster />
         </RootProvider>
       </body>
