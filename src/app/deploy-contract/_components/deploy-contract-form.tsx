@@ -35,6 +35,8 @@ import useReadContract from '@/custom-hooks/use-read-contract';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { cn } from '@/lib/utils';
 
+import GasFeeEstimation from './gas-fee-estimation';
+
 const formSchema = z.object({
   tokenName: z
     .string({ required_error: 'is required' })
@@ -346,13 +348,7 @@ export default function DeployContractForm() {
                           {chain.badge}
                         </Badge>
 
-                        {/* {chain.gasEstimation ? (
-                          <p className='text-sm text-muted-foreground'>
-                            Estimated cost to deploy contract:
-                            <span className='font-medium'>&nbsp;{chain.gasEstimation}&nbsp;</span>
-                            USD
-                          </p>
-                        ) : null} */}
+                        <GasFeeEstimation chainName={chain.name} deploymentFee={deploymentFee} />
                       </div>
                     </FormItem>
                   ))}
@@ -362,30 +358,32 @@ export default function DeployContractForm() {
           )}
         />
 
-        <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
-          <p className='text-muted-foreground'>Deployment fee: </p>
-          {isDeploymentFeeLoading || !deploymentFee ? (
-            <Skeleton className='h-6 w-[4.5rem]' />
-          ) : (
-            <div className='flex gap-x-1'>
-              <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
-              <span className='font-medium'>
-                {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
-              </span>
-            </div>
-          )}
-        </div>
+        <div className='flex items-center justify-between'>
+          <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
+            <p className='text-muted-foreground'>Deployment fee: </p>
+            {isDeploymentFeeLoading || !deploymentFee ? (
+              <Skeleton className='h-6 w-[4.5rem]' />
+            ) : (
+              <div className='flex gap-x-1'>
+                <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
+                <span className='font-medium'>
+                  {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
+                </span>
+              </div>
+            )}
+          </div>
 
-        <Button type='submit' disabled={isDeployERC404Loading}>
-          {isDeployERC404Loading ? (
-            <div className='flex items-center gap-x-2.5'>
-              <Loader2 className='h-5 w-5 animate-spin' />
-              <span>Deploying collection</span>
-            </div>
-          ) : (
-            'Deploy collection'
-          )}
-        </Button>
+          <Button type='submit' disabled={isDeployERC404Loading}>
+            {isDeployERC404Loading ? (
+              <div className='flex items-center gap-x-2.5'>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                <span>Deploying collection</span>
+              </div>
+            ) : (
+              'Deploy collection'
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
