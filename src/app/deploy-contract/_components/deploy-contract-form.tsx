@@ -28,7 +28,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { EChainsName, testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
@@ -36,6 +35,7 @@ import useWriteContract from '@/custom-hooks/use-write-contract';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 import { cn } from '@/lib/utils';
 
+import Countdown from './countdown';
 import GasFeeEstimation from './gas-fee-estimation';
 
 const formSchema = z.object({
@@ -335,10 +335,28 @@ export default function DeployContractForm() {
           )}
         />
 
-        <div className='flex items-center justify-between'>
+        <div className='relative mt-5 flex items-center justify-between rounded-md border-2 border-destructive p-5'>
+          <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+            Deployment fee: 0.00 ETH
+          </span>
+
+          <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+            LIMITED TIME OFFER
+          </span>
+
           <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
             <p className='text-muted-foreground'>Deployment fee: </p>
-            {isDeploymentFeeLoading ? (
+            <div className='relative flex gap-x-1'>
+              <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
+              <span className='font-medium'>
+                {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
+              </span>
+
+              <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+            </div>
+
+            {/* ACTUAL CODE TO DISPLAY DEPLOYMENT FEE */}
+            {/* {isDeploymentFeeLoading ? (
               <Skeleton className='h-6 w-[4.5rem]' />
             ) : (
               <div className='flex gap-x-1'>
@@ -347,8 +365,10 @@ export default function DeployContractForm() {
                   {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
+
+          <Countdown />
 
           <Button type='submit' disabled={isDeployERC404Loading}>
             {isDeployERC404Loading ? (
