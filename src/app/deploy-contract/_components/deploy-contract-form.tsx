@@ -90,14 +90,18 @@ export default function DeployContractForm() {
     }
   });
 
-  // prettier-ignore
-  const { 
+  const {
     isLoading: isDeploymentFeeLoading,
     response: deploymentFee,
     readContract: readDeploymentFee
   } = useReadContract<bigint>();
 
   // prettier-ignore
+  const {
+    response: userDeploymentFee,
+    readContract: readUserDeploymentFee
+  } = useReadContract<bigint>();
+
   const {
     isLoading: isDeployERC404Loading,
     errorMessage: deployERC404Error,
@@ -113,15 +117,22 @@ export default function DeployContractForm() {
   }, [activeChain, form]);
 
   useEffect(() => {
-    if (activeChain && !isSwitchLoading) {
+    if (activeChain && !isSwitchLoading && account.address) {
       // prettier-ignore
       readDeploymentFee(
         factoryAbi.abi as Abi,
         'deploymentFee',
         activeChain.contractAddress,
       );
+
+      readUserDeploymentFee(
+        factoryAbi.abi as Abi,
+        'deploymentFeeForUser',
+        activeChain.contractAddress,
+        [account.address]
+      );
     }
-  }, [activeChain, readDeploymentFee]);
+  }, [activeChain, isSwitchLoading, account.address, readUserDeploymentFee, readDeploymentFee]);
 
   useEffect(() => {
     if (deployERC404Error) {
@@ -189,7 +200,7 @@ export default function DeployContractForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!deploymentFee) {
+    if (userDeploymentFee === null) {
       return;
     }
 
@@ -203,7 +214,7 @@ export default function DeployContractForm() {
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
       activeChain?.contractAddress ?? '0x',
-      deploymentFee
+      userDeploymentFee
     );
   }
 
