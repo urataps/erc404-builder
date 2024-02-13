@@ -62,7 +62,7 @@ export default function WithSignTAC({ children }: TWithSignTAC) {
 
           toast({
             variant: 'destructive',
-            title: 'Message signature error',
+            title: 'Error - Signature',
             description: 'You must accept Terms and Conditions before using our platform.'
           });
 

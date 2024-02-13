@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { TWalletError } from '@/lib/errors-mapper';
 import type { Abi, PublicClient } from 'viem';
 
 import { createPublicClient, http } from 'viem';
@@ -18,7 +19,7 @@ export default function useEstimateGasFee() {
   const [publicClient, setPublicClient] = useState<PublicClient | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<TWalletError | null>(null);
   const [response, setResponse] = useState<bigint | null>(null);
 
   useEffect(() => {

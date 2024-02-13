@@ -8,6 +8,7 @@ import { useAccount } from 'wagmi';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast/use-toast';
 import { testnetChains } from '@/config/testnet-chains';
 import useEstimateGasFee from '@/custom-hooks/use-estimate-gas-fee';
 
@@ -30,9 +31,11 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
     [chainName]
   );
 
+  const { toast } = useToast();
+
   const {
     isLoading: isEstimateGasFeeLoading,
-    errorMessage: estimateGasFeeErrorMessage,
+    errorMessage: estimateGasFeeError,
     response: gasFee,
     estimateGasFee
   } = useEstimateGasFee();
@@ -51,13 +54,23 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
     }
   }, [activeChain, address, deploymentFee, estimateGasFee]);
 
+  useEffect(() => {
+    if (estimateGasFeeError) {
+      toast({
+        variant: 'destructive',
+        title: estimateGasFeeError.title,
+        description: estimateGasFeeError.message
+      });
+    }
+  }, [estimateGasFeeError, toast]);
+
   return (
-    <div className='flex flex-col items-start gap-y-1 text-sm text-foreground'>
+    <div className='flex flex-col items-start gap-y-0.5 text-sm text-foreground'>
       <>
         <p className='text-muted-foreground'>Estimated gas fees:</p>
         <br />
       </>
-      {isEstimateGasFeeLoading || !gasFee ? (
+      {isEstimateGasFeeLoading ? (
         <Skeleton className='h-5 w-full' />
       ) : (
         <div className='flex gap-x-1'>

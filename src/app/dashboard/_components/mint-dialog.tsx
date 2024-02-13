@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits, isAddress, parseUnits } from 'viem';
+import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
@@ -29,6 +31,8 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/toast/use-toast';
+import { testnetChains } from '@/config/testnet-chains';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { cn } from '@/lib/utils';
 
@@ -49,6 +53,13 @@ export default function MintDialog({
   dialogTriggerClassName,
   onMintDialogClose
 }: TMintDialog) {
+  const chainId = useChainId();
+  const activeChain = useMemo(
+    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    [chainId]
+  );
+  const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const availableSupply = useMemo(() => {
@@ -88,6 +99,7 @@ export default function MintDialog({
     [formattedAvailableSupply]
   );
 
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -98,10 +110,45 @@ export default function MintDialog({
 
   const {
     isLoading: isMintLoading,
-    errorMessage: mintErrorMessage,
+    errorMessage: mintError,
     response: mintResponse,
     writeContract: mint
   } = useWriteContract();
+
+  useEffect(() => {
+    if (mintError) {
+      toast({
+        variant: 'destructive',
+        title: mintError.title,
+        description: mintError.message
+      });
+    }
+  }, [mintError, toast]);
+
+  useEffect(() => {
+    if (mintResponse) {
+      const txHash = mintResponse.receipt.transactionHash;
+
+      toast({
+        title: 'Success - Mint',
+        description: (
+          <>
+            <p>NFTs minted successfully.</p>
+            {explorer ? (
+              <Button variant='link' className='h-min px-0 py-0' asChild>
+                <Link href={`${explorer.url}/tx/${txHash}`} target='_blank'>
+                  View the transaction on {explorer.name}.
+                </Link>
+              </Button>
+            ) : null}
+            <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
+          </>
+        )
+      });
+
+      form.reset();
+    }
+  }, [mintResponse, explorer, form, toast]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const to = values.recipientAddress;

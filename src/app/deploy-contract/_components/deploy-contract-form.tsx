@@ -33,6 +33,7 @@ import { useToast } from '@/components/ui/toast/use-toast';
 import { EChainsName, testnetChains } from '@/config/testnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import useWriteContract from '@/custom-hooks/use-write-contract';
+import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 import { cn } from '@/lib/utils';
 
 import GasFeeEstimation from './gas-fee-estimation';
@@ -77,34 +78,6 @@ export default function DeployContractForm() {
   const { toast } = useToast();
   const { switchChainAsync } = useSwitchChain();
 
-  // async function fetchFees(chainName: EChainsName, constructorArguments?: unknown[]) {
-  //   const chain = testnetChains.find((value) => value.name === chainName);
-
-  //   const publicClient = createPublicClient({
-  //     chain: chain?.network,
-  //     transport: http()
-  //   });
-
-  //   const deploymentFee = await publicClient.readContract({
-  //     abi: deploymentFeeAbi,
-  //     address: chain?.contractAddress ?? '0x',
-  //     functionName: 'deploymentFee'
-  //   });
-
-  //   // const gasPrice = await publicClient.getGasPrice();
-  //   // const gasCost = await publicClient.estimateContractGas({
-  //   //   address: activeChain?.contractAddress || '0x',
-  //   //   abi: factoryAbi.abi,
-  //   //   functionName: 'deployERC404',
-  //   //   args: constructorArgs,
-  //   //   value: deploymentFee,
-  //   //   account: account.address
-  //   // });
-  //   // const gasFee = gasPrice * gasCost;
-  //   // return { deploymentFee, gassFee }
-  //   return { deploymentFee };
-  // }
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -126,7 +99,7 @@ export default function DeployContractForm() {
   // prettier-ignore
   const {
     isLoading: isDeployERC404Loading,
-    errorMessage: deployERC404ErrorMessage,
+    errorMessage: deployERC404Error,
     response: deployERC404Response,
     writeContract: deployERC404
   } = useWriteContract();
@@ -150,17 +123,19 @@ export default function DeployContractForm() {
   }, [activeChain, readDeploymentFee]);
 
   useEffect(() => {
-    if (deployERC404ErrorMessage) {
+    if (deployERC404Error) {
       toast({
         variant: 'destructive',
-        title: 'Transaction',
-        description: deployERC404ErrorMessage
+        title: deployERC404Error.title,
+        description: deployERC404Error.message
       });
     }
-  }, [deployERC404ErrorMessage, toast]);
+  }, [deployERC404Error, toast]);
 
   useEffect(() => {
     if (deployERC404Response) {
+      const deploymentAddress = deployERC404Response.simulation.result as string;
+
       toast({
         title: 'Success',
         description: (
@@ -168,7 +143,7 @@ export default function DeployContractForm() {
             <p>Collection deployed successfully.</p>
             {explorer ? (
               <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/address/${deployERC404Response}`} target='_blank'>
+                <Link href={`${explorer.url}/address/${deploymentAddress}`} target='_blank'>
                   View the collection on {explorer.name}.
                 </Link>
               </Button>
@@ -200,10 +175,12 @@ export default function DeployContractForm() {
 
       form.setValue('chain', value);
     } catch (error: unknown) {
+      const walletError = mapWalletErrorsToMessage(error);
+
       toast({
         variant: 'destructive',
-        title: 'Switch chain',
-        description: 'You rejected the request.'
+        title: walletError.title,
+        description: walletError.message
       });
 
       console.error('ERROR SWITCHING CHAIN', error);
@@ -361,7 +338,7 @@ export default function DeployContractForm() {
         <div className='flex items-center justify-between'>
           <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
             <p className='text-muted-foreground'>Deployment fee: </p>
-            {isDeploymentFeeLoading || !deploymentFee ? (
+            {isDeploymentFeeLoading ? (
               <Skeleton className='h-6 w-[4.5rem]' />
             ) : (
               <div className='flex gap-x-1'>

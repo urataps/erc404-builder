@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { TWalletError } from '@/lib/errors-mapper';
 import type { Abi, PublicClient, WalletClient } from 'viem';
 
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
@@ -19,7 +20,7 @@ export default function useReadContract<R>() {
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<TWalletError | null>(null);
   const [response, setResponse] = useState<R | null>(null);
 
   useEffect(() => {

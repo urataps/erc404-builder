@@ -1,12 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Abi, PublicClient, WalletClient } from 'viem';
+import type { TWalletError } from '@/lib/errors-mapper';
+import type {
+  Abi,
+  PublicClient,
+  SimulateContractReturnType,
+  TransactionReceipt,
+  WalletClient
+} from 'viem';
 
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { useChainId } from 'wagmi';
 
 import { testnetChains } from '@/config/testnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
+
+type TWriteContractResponse = {
+  simulation: SimulateContractReturnType;
+  hash: `0x${string}`;
+  receipt: TransactionReceipt;
+};
 
 export default function useWriteContract() {
   const chainId = useChainId();
@@ -19,8 +32,8 @@ export default function useWriteContract() {
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [response, setResponse] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<TWalletError | null>(null);
+  const [response, setResponse] = useState<TWriteContractResponse | null>(null);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -59,7 +72,7 @@ export default function useWriteContract() {
         const walletAddresses = await walletClient.getAddresses();
         const walletAddress = walletAddresses.at(0);
 
-        const writeSimulation = await publicClient.simulateContract({
+        const simulation = await publicClient.simulateContract({
           abi,
           functionName,
           args: arguments_,
@@ -68,13 +81,17 @@ export default function useWriteContract() {
           value
         });
 
-        const writeHash = await walletClient.writeContract(writeSimulation.request);
+        const hash = await walletClient.writeContract(simulation.request);
 
-        await publicClient.waitForTransactionReceipt({ hash: writeHash });
+        const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
         setIsLoading(false);
         setErrorMessage(null);
-        setResponse(writeSimulation.result);
+        setResponse({
+          simulation,
+          hash,
+          receipt
+        });
       } catch (error: unknown) {
         setIsLoading(false);
         setErrorMessage(mapWalletErrorsToMessage(error));

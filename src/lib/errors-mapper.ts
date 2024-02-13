@@ -1,5 +1,11 @@
+type TWalletError = {
+  title: string;
+  message: string;
+};
+
 export function mapWalletErrorsToMessage(error: unknown) {
-  const defaultErrorMessage = 'Something horribly wrong happened with your transaction.';
+  const defaultTitle = 'Unexpected error';
+  const defaultMessage = 'Something horribly wrong happened with your transaction.';
 
   if (
     error !== null &&
@@ -10,19 +16,48 @@ export function mapWalletErrorsToMessage(error: unknown) {
   ) {
     switch (error.name) {
       case 'SyntaxError': {
-        return 'You misspelled one or more constructor arguments.';
+        return {
+          title: 'Error - Syntax',
+          message: 'You misspelled one or more constructor arguments.'
+        };
       }
       case 'UserRejectedRequestError': {
-        return 'You denied transaction signature.';
+        return {
+          title: 'Error - Signature',
+          message: 'You denied transaction signature.'
+        };
       }
       case 'TransactionExecutionError': {
-        return 'Transaction reverted.';
+        return {
+          title: 'Error - Transaction execution',
+          message: 'You rejected the request.'
+        };
+      }
+      case 'SwitchChainError': {
+        return {
+          title: 'Error - Switch chain',
+          message: 'A switching request is already pending.'
+        };
+      }
+      case 'ContractFunctionExecutionError': {
+        return {
+          title: 'Error - Method execution',
+          message: 'Total gas fee exceeds account balance.'
+        };
       }
       default: {
-        return defaultErrorMessage;
+        return {
+          title: defaultTitle,
+          message: defaultMessage
+        };
       }
     }
   }
 
-  return defaultErrorMessage;
+  return {
+    title: defaultTitle,
+    message: defaultMessage
+  };
 }
+
+export type { TWalletError };
