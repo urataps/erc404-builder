@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   robots: {
     index: false,
     follow: false
+  },
+  other: {
+    'google-site-verification': 'au3_ZmG9kVHgAkYvYNIM_cZgrLfWv2ZtEnHSv8JiN0E'
   }
 };
 
