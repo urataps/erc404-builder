@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { testnetChains } from '@/config/testnet-chains';
 import useEstimateGasFee from '@/custom-hooks/use-estimate-gas-fee';
+import { trimBigString } from '@/lib/utils';
 
 const dummyArguments = [
   'DeFi Builder', // name
@@ -44,10 +45,11 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
     if (activeChain && address && deploymentFee) {
       // prettier-ignore
       estimateGasFee(
+        activeChain.network,
         factoryAbi.abi as Abi,
         'deployERC404',
         activeChain.contractAddress,
-        address,
+        activeChain.gasEstimatorAddress,
         dummyArguments,
         deploymentFee
       );
@@ -74,7 +76,7 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
         <Skeleton className='h-5 w-full' />
       ) : (
         <div className='flex gap-x-1'>
-          <span className='font-medium'>{formatUnits(gasFee ?? 0n, 18)}</span>
+          <span className='font-medium'>{trimBigString(formatUnits(gasFee ?? 0n, 18))}</span>
           <span className='font-medium'>
             {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
           </span>

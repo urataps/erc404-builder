@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
-import { useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
@@ -75,8 +75,9 @@ export default function DeployContractForm() {
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
+  const account = useAccount();
   const { toast } = useToast();
-  const { switchChainAsync } = useSwitchChain();
+  const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,13 +91,19 @@ export default function DeployContractForm() {
   });
 
   // prettier-ignore
-  const { 
+  const {
     isLoading: isDeploymentFeeLoading,
     response: deploymentFee,
     readContract: readDeploymentFee
   } = useReadContract<bigint>();
 
   // prettier-ignore
+  const {
+    isLoading: isUserDeploymentFeeLoading,
+    response: userDeploymentFee,
+    readContract: readUserDeploymentFee
+  } = useReadContract<bigint>();
+
   const {
     isLoading: isDeployERC404Loading,
     errorMessage: deployERC404Error,
@@ -112,15 +119,22 @@ export default function DeployContractForm() {
   }, [activeChain, form]);
 
   useEffect(() => {
-    if (activeChain) {
+    if (activeChain && !isSwitchLoading && account.address) {
       // prettier-ignore
       readDeploymentFee(
         factoryAbi.abi as Abi,
         'deploymentFee',
         activeChain.contractAddress,
       );
+
+      readUserDeploymentFee(
+        factoryAbi.abi as Abi,
+        'deploymentFeeForUser',
+        activeChain.contractAddress,
+        [account.address]
+      );
     }
-  }, [activeChain, readDeploymentFee]);
+  }, [activeChain, isSwitchLoading, account.address, readUserDeploymentFee, readDeploymentFee]);
 
   useEffect(() => {
     if (deployERC404Error) {
@@ -188,7 +202,7 @@ export default function DeployContractForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!deploymentFee) {
+    if (userDeploymentFee === null) {
       return;
     }
 
@@ -202,7 +216,7 @@ export default function DeployContractForm() {
       'deployERC404',
       [name, symbol, baseURI, totalNFTSupply],
       activeChain?.contractAddress ?? '0x',
-      deploymentFee
+      userDeploymentFee
     );
   }
 
@@ -336,13 +350,17 @@ export default function DeployContractForm() {
         />
 
         <div className='relative mt-5 flex items-center justify-between rounded-md border-2 border-destructive p-5'>
-          <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-            Deployment fee: 0.00 ETH
-          </span>
+          {userDeploymentFee === 0n && (
+            <span className='absolute left-[50px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+              Deployment fee: 0.00 ETH
+            </span>
+          )}
 
-          <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
-            LIMITED TIME OFFER
-          </span>
+          {userDeploymentFee === 0n && (
+            <span className='absolute right-[30px] top-[-20px] rounded-full bg-destructive p-1.5 text-xs text-destructive-foreground'>
+              LIMITED TIME OFFER
+            </span>
+          )}
 
           <div className='flex h-10 w-fit items-center gap-x-2.5 rounded-md border border-border p-2.5 text-foreground'>
             <p className='text-muted-foreground'>Deployment fee: </p>
@@ -352,23 +370,13 @@ export default function DeployContractForm() {
                 {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
               </span>
 
-              <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+              {userDeploymentFee === 0n && (
+                <span className='absolute top-1/2 h-1 w-full rotate-3 bg-destructive opacity-80' />
+              )}
             </div>
-
-            {/* ACTUAL CODE TO DISPLAY DEPLOYMENT FEE */}
-            {/* {isDeploymentFeeLoading ? (
-              <Skeleton className='h-6 w-[4.5rem]' />
-            ) : (
-              <div className='flex gap-x-1'>
-                <span className='font-medium'>{formatUnits(deploymentFee ?? 0n, 18)}</span>
-                <span className='font-medium'>
-                  {activeChain ? activeChain.network.nativeCurrency.symbol : 'ETH'}
-                </span>
-              </div>
-            )} */}
           </div>
 
-          <Countdown />
+          {userDeploymentFee === 0n && <Countdown />}
 
           <Button type='submit' disabled={isDeployERC404Loading}>
             {isDeployERC404Loading ? (
