@@ -44,10 +44,11 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
     if (activeChain && address && deploymentFee) {
       // prettier-ignore
       estimateGasFee(
+        activeChain.network,
         factoryAbi.abi as Abi,
         'deployERC404',
         activeChain.contractAddress,
-        address,
+        activeChain.gasEstimatorAddress,
         dummyArguments,
         deploymentFee
       );

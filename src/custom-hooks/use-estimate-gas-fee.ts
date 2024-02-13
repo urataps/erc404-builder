@@ -1,49 +1,31 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { TWalletError } from '@/lib/errors-mapper';
-import type { Abi, PublicClient } from 'viem';
+import type { Abi, Address, Chain } from 'viem';
 
 import { createPublicClient, http } from 'viem';
-import { useChainId } from 'wagmi';
 
-import { testnetChains } from '@/config/testnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 export default function useEstimateGasFee() {
-  const chainId = useChainId();
-  const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
-    [chainId]
-  );
-
-  const [publicClient, setPublicClient] = useState<PublicClient | null>(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<TWalletError | null>(null);
   const [response, setResponse] = useState<bigint | null>(null);
 
-  useEffect(() => {
-    if (window.ethereum) {
-      const publicClient = createPublicClient({
-        chain: activeChain?.network,
-        transport: http()
-      });
-      setPublicClient(publicClient);
-    }
-  }, [activeChain]);
-
   const estimateGasFee = useCallback(
     async (
+      chain: Chain,
       abi: Abi,
       functionName: string,
-      contractAddress: `0x${string}`,
-      walletAddress: `0x${string}`,
+      contractAddress: Address,
+      estimatorAddress: Address,
       arguments_?: string[],
       value = 0n
     ) => {
-      if (!publicClient) {
-        return;
-      }
+      const publicClient = createPublicClient({
+        chain,
+        transport: http()
+      });
 
       try {
         setIsLoading(true);
@@ -56,7 +38,7 @@ export default function useEstimateGasFee() {
           functionName,
           args: arguments_,
           address: contractAddress,
-          account: walletAddress,
+          account: estimatorAddress,
           value
         });
 
@@ -74,11 +56,10 @@ export default function useEstimateGasFee() {
         console.error('ERROR ESTIMATING GAS', functionName, error);
       }
     },
-    [publicClient]
+    []
   );
 
   return {
-    publicClient,
     isLoading,
     errorMessage,
     response,
