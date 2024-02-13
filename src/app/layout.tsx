@@ -6,6 +6,7 @@ import React from 'react';
 import type { Metadata, Viewport } from 'next';
 
 import config from '_config';
+import { Analytics } from '@vercel/analytics/react';
 
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar/navbar';
@@ -21,6 +22,9 @@ export const metadata: Metadata = {
   robots: {
     index: false,
     follow: false
+  },
+  other: {
+    'google-site-verification': 'au3_ZmG9kVHgAkYvYNIM_cZgrLfWv2ZtEnHSv8JiN0E'
   }
 };
 
@@ -39,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <Footer />
 
+          <Analytics />
           <Toaster />
         </RootProvider>
       </body>
