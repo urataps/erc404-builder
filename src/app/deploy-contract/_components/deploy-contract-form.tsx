@@ -12,7 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
-import { useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
@@ -75,8 +75,9 @@ export default function DeployContractForm() {
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
+  const account = useAccount();
   const { toast } = useToast();
-  const { switchChainAsync } = useSwitchChain();
+  const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -112,7 +113,7 @@ export default function DeployContractForm() {
   }, [activeChain, form]);
 
   useEffect(() => {
-    if (activeChain) {
+    if (activeChain && !isSwitchLoading) {
       // prettier-ignore
       readDeploymentFee(
         factoryAbi.abi as Abi,
