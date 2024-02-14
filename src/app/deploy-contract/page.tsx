@@ -1,10 +1,16 @@
 import React from 'react';
 
+import config from '_config';
+
 import Section from '@/components/section';
 import WithAuthentication from '@/higher-order-components/with-authentication';
 import WithSignTAC from '@/higher-order-components/with-sign-tac';
 
 import DeployContractForm from './_components/deploy-contract-form';
+
+export const metadata = {
+  title: `${config.metadata.title} | Deploy contract`
+};
 
 export default function DeployContract() {
   return (
