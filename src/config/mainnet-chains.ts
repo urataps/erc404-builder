@@ -10,6 +10,13 @@ enum EChainsName {
 }
 
 const mainnetChainsConfig = {
+  Linea: {
+    ...baseChains.Linea,
+    name: EChainsName.linea,
+    network: linea,
+    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
+    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
+  },
   Arbitrum: {
     ...baseChains.Arbitrum,
     name: EChainsName.arbitrum,
@@ -21,13 +28,6 @@ const mainnetChainsConfig = {
     ...baseChains.BSC,
     name: EChainsName.bsc,
     network: bsc,
-    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
-    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
-  },
-  Linea: {
-    ...baseChains.Linea,
-    name: EChainsName.linea,
-    network: linea,
     gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
     contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
   },
