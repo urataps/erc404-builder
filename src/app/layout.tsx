@@ -23,18 +23,16 @@ export const metadata: Metadata = {
     index: true,
     follow: true
   },
+  openGraph: {
+    url: `https://${config.metadata.domain}`,
+    type: 'website',
+    title: config.metadata.title,
+    description: config.metadata.description,
+    images: {
+      url: `https://${config.metadata.domain}/${config.metadata.ogImage}`
+    }
+  },
   other: {
-    'og:url': `https://${config.metadata.domain}`,
-    'og:type': 'website',
-    'og:title': config.metadata.title,
-    'og:description': config.metadata.description,
-    'og:image': config.metadata.ogImage,
-    'twitter:card': 'summary_large_image',
-    'twitter:domain': config.metadata.domain,
-    'twitter:url': `https://${config.metadata.domain}`,
-    'twitter:title': config.metadata.title,
-    'twitter:description': config.metadata.description,
-    'twitter:image': config.metadata.ogImage,
     'google-site-verification': 'au3_ZmG9kVHgAkYvYNIM_cZgrLfWv2ZtEnHSv8JiN0E'
   }
 };
