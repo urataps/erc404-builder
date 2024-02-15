@@ -8,11 +8,11 @@ import type { Chain } from 'wagmi/chains';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import { createConfig, WagmiProvider } from 'wagmi';
 
-import { testnetChains } from '@/config/testnet-chains';
+import { mainnetChains } from '@/config/mainnet-chains';
 
 import QueryClientProvider from './query-client';
 
-const testnetNetworks = testnetChains.map((chain) => chain.network);
+const testnetNetworks = mainnetChains.map((chain) => chain.network);
 const chains: [Chain, ...Chain[]] = [testnetNetworks[0]!, ...testnetNetworks.slice(1)];
 
 const config = createConfig(

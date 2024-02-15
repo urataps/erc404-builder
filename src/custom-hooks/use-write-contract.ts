@@ -12,7 +12,7 @@ import type {
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { useChainId } from 'wagmi';
 
-import { testnetChains } from '@/config/testnet-chains';
+import { mainnetChains } from '@/config/mainnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 type TWriteContractResponse = {
@@ -24,7 +24,7 @@ type TWriteContractResponse = {
 export default function useWriteContract() {
   const chainId = useChainId();
   const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
 

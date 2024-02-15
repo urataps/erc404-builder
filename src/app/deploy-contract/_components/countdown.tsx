@@ -6,7 +6,7 @@ import { differenceInSeconds } from 'date-fns';
 
 const Countdown: React.FC = () => {
   const [endTime] = useState(() => {
-    const now = new Date('2024-02-14 17:00');
+    const now = new Date('2024-02-15T13:00Z');
     const end = new Date(now);
     end.setSeconds(now.getSeconds() + 24 * 60 * 60);
     return end;

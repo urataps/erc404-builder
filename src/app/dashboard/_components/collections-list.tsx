@@ -11,7 +11,7 @@ import { useAccount, useChainId } from 'wagmi';
 import factoryAbi from '@/artifacts/Factory.json';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { testnetChains } from '@/config/testnet-chains';
+import { mainnetChains } from '@/config/mainnet-chains';
 import { ERoutesName, ERoutesPath } from '@/constants/routes';
 import useReadContract from '@/custom-hooks/use-read-contract';
 
@@ -22,7 +22,7 @@ export default function CollectionsList() {
   const chainId = useChainId();
   const { address } = useAccount();
   const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
 

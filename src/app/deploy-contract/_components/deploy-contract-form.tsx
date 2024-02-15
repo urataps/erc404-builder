@@ -30,7 +30,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
-import { EChainsName, testnetChains } from '@/config/testnet-chains';
+import { EChainsName, mainnetChains } from '@/config/mainnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
@@ -71,7 +71,7 @@ const formSchema = z.object({
 export default function DeployContractForm() {
   const chainId = useChainId();
   const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
@@ -186,7 +186,7 @@ export default function DeployContractForm() {
       return;
     }
 
-    const chain = testnetChains.find((chain) => chain.name === value);
+    const chain = mainnetChains.find((chain) => chain.name === value);
 
     if (!chain) {
       return;
@@ -313,7 +313,7 @@ export default function DeployContractForm() {
               <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
-                  {testnetChains.map((chain) => (
+                  {mainnetChains.map((chain) => (
                     <FormItem
                       key={chain.name}
                       className={cn(

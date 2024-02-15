@@ -14,29 +14,29 @@ const mainnetChainsConfig = {
     ...baseChains.Linea,
     name: EChainsName.linea,
     network: linea,
-    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
-    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
+    gasEstimatorAddress: '0xd3d7DBe73BbdD5A5C7a49Ca322763c4d400fC240' as `0x${string}`,
+    contractAddress: '0x6bdc4c9FC3AE70c118550Dba6acd36d86C70298E' as `0x${string}`
   },
   Arbitrum: {
     ...baseChains.Arbitrum,
     name: EChainsName.arbitrum,
     network: arbitrum,
-    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
-    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
+    gasEstimatorAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC' as `0x${string}`,
+    contractAddress: '0x6bdc4c9FC3AE70c118550Dba6acd36d86C70298E' as `0x${string}`
   },
   BSC: {
     ...baseChains.BSC,
     name: EChainsName.bsc,
     network: bsc,
-    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
-    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
+    gasEstimatorAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC' as `0x${string}`,
+    contractAddress: '0x6bdc4c9FC3AE70c118550Dba6acd36d86C70298E' as `0x${string}`
   },
   Polygon: {
     ...baseChains.Polygon,
     name: EChainsName.polygon,
     network: polygon,
-    gasEstimatorAddress: '0x1606b74131162a6EeaD68f0294d2967cf6166DdE' as `0x${string}`,
-    contractAddress: '0x6a6Cd89725ff0D8cFB6A8f7E41B735A277331c2A' as `0x${string}`
+    gasEstimatorAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC' as `0x${string}`,
+    contractAddress: '0x6bdc4c9FC3AE70c118550Dba6acd36d86C70298E' as `0x${string}`
   }
 };
 
