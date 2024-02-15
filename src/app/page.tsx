@@ -1,8 +1,9 @@
 import React from 'react';
 
 import Main from '@/components/main';
-import WalletButton from '@/components/navbar/wallet-button';
 import WithSignTAC from '@/higher-order-components/with-sign-tac';
+
+import HomeCTAs from './_components/home-ctas';
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
           Blockchains.
         </h2>
 
-        <WalletButton className='mt-5' />
+        <HomeCTAs />
       </Main>
     </WithSignTAC>
   );
