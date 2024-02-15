@@ -6,13 +6,13 @@ import type { Abi, PublicClient, WalletClient } from 'viem';
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { useChainId } from 'wagmi';
 
-import { testnetChains } from '@/config/testnet-chains';
+import { mainnetChains } from '@/config/mainnet-chains';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
 
 export default function useReadContract<R>() {
   const chainId = useChainId();
   const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
 

@@ -12,7 +12,7 @@ import { useChainId } from 'wagmi';
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { testnetChains } from '@/config/testnet-chains';
+import { mainnetChains } from '@/config/mainnet-chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import { cn } from '@/lib/utils';
 
@@ -25,7 +25,7 @@ type TCollectionItem = {
 export default function CollectionItem({ collectionAddress }: TCollectionItem) {
   const chainId = useChainId();
   const activeChain = useMemo(
-    () => testnetChains.find((chain) => chain.network.id === chainId) ?? testnetChains[0],
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
