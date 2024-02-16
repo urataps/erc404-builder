@@ -3,8 +3,8 @@ import React, { useEffect, useMemo } from 'react';
 import type { EChainsName } from '@/config/mainnet-chains';
 import type { Abi } from 'viem';
 
-import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
+import { formatUnits, parseEther } from 'viem';
+import { useAccount, useChainId } from 'wagmi';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -22,11 +22,11 @@ const dummyArguments = [
 
 type TGasFeeEstimation = {
   chainName: EChainsName;
-  deploymentFee: bigint | null;
 };
 
-export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEstimation) {
+export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
   const { address } = useAccount();
+  const chainId = useChainId();
   const activeChain = useMemo(
     () => mainnetChains.find((chain) => chain.name === chainName) ?? mainnetChains[0],
     [chainName]
@@ -42,8 +42,7 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
   } = useEstimateGasFee();
 
   useEffect(() => {
-    if (activeChain && address && deploymentFee) {
-      // prettier-ignore
+    if (activeChain && address) {
       estimateGasFee(
         activeChain.network,
         factoryAbi.abi as Abi,
@@ -51,10 +50,10 @@ export default function GasFeeEstimation({ chainName, deploymentFee }: TGasFeeEs
         activeChain.contractAddress,
         activeChain.gasEstimatorAddress,
         dummyArguments,
-        deploymentFee
+        parseEther('50')
       );
     }
-  }, [activeChain, address, deploymentFee, estimateGasFee]);
+  }, [activeChain, address, chainId, estimateGasFee]);
 
   useEffect(() => {
     if (estimateGasFeeError) {

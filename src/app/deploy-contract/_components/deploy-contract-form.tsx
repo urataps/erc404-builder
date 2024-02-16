@@ -349,7 +349,7 @@ export default function DeployContractForm() {
                           {chain.badge}
                         </Badge>
 
-                        <GasFeeEstimation chainName={chain.name} deploymentFee={deploymentFee} />
+                        <GasFeeEstimation chainName={chain.name} />
                       </div>
                     </FormItem>
                   ))}
