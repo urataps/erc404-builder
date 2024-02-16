@@ -203,8 +203,8 @@ export default function MintDialog({
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center gap-x-1'>
-                    <FormLabel className='text-base font-semibold'>Recipient address</FormLabel>
-                    <FormMessage className='text-base font-semibold' />
+                    <FormLabel>Recipient address</FormLabel>
+                    <FormMessage className='leading-none' />
                   </div>
                   <FormControl>
                     <Input
@@ -224,8 +224,8 @@ export default function MintDialog({
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center gap-x-1'>
-                    <FormLabel className='text-base font-semibold'>Mint amount</FormLabel>
-                    <FormMessage className='text-base font-semibold' />
+                    <FormLabel>Mint amount</FormLabel>
+                    <FormMessage className='leading-none' />
                   </div>
                   <FormControl>
                     <Input placeholder='i.e. 50' className='placeholder:italic' {...field} />

@@ -242,8 +242,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Token name</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Token name</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. DeFi Builder' className='placeholder:italic' {...field} />
@@ -259,8 +259,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Token symbol</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Token symbol</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. DFB' className='placeholder:italic' {...field} />
@@ -276,8 +276,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Total supply</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Total supply</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. 1000' className='placeholder:italic' {...field} />
@@ -293,8 +293,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Base URI</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Base URI</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input
@@ -312,7 +312,7 @@ export default function DeployContractForm() {
           name='chain'
           render={({ field }) => (
             <FormItem className='overflow-x-auto pb-5'>
-              <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
+              <FormLabel>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
                   {chains.map((chain) => (
