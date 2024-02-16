@@ -12,7 +12,7 @@ type TLayout = PropsWithChildren;
 export default function Layout({ children }: TLayout) {
   return (
     <div className='flex h-full w-full flex-row items-start justify-start overflow-hidden'>
-      <Main className='w-2/3 overflow-y-auto'>{children}</Main>
+      <Main className='w-2/3'>{children}</Main>
 
       <Aside className='w-1/3 p-10'>
         <NftPartners />
