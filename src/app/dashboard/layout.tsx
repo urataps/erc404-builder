@@ -5,8 +5,7 @@ import type { PropsWithChildren } from 'react';
 import Aside from '@/components/aside';
 import FeatureRequest from '@/components/feature-request';
 import Main from '@/components/main';
-
-import NftPartners from './_components/nft-partners';
+import NftPartners from '@/components/nft-partners';
 
 type TLayout = PropsWithChildren;
 
