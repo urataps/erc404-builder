@@ -16,6 +16,7 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
+import WalletButton from '@/components/navbar/wallet-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -70,15 +71,16 @@ const formSchema = z.object({
 
 export default function DeployContractForm() {
   const chainId = useChainId();
+  const { isConnected, address } = useAccount();
+  const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
+
   const activeChain = useMemo(
     () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
 
-  const { address } = useAccount();
   const { toast } = useToast();
-  const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,7 +89,7 @@ export default function DeployContractForm() {
       tokenSymbol: '',
       totalSupply: '',
       baseUri: '',
-      chain: EChainsName.arbitrum
+      chain: EChainsName.linea
     }
   });
 
@@ -100,7 +102,6 @@ export default function DeployContractForm() {
 
   // prettier-ignore
   const {
-    isLoading: isUserDeploymentFeeLoading,
     response: userDeploymentFee,
     readContract: readUserDeploymentFee
   } = useReadContract<bigint>();
@@ -182,7 +183,7 @@ export default function DeployContractForm() {
   }, [activeChain, address, deployERC404Response, explorer, form, toast, readUserDeploymentFee]);
 
   async function handleRadioChange(value: EChainsName) {
-    if (isDeployERC404Loading) {
+    if (!isConnected || isDeployERC404Loading) {
       return;
     }
 
@@ -212,7 +213,7 @@ export default function DeployContractForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (userDeploymentFee === null) {
+    if (!isConnected || userDeploymentFee === null) {
       return;
     }
 
@@ -396,16 +397,20 @@ export default function DeployContractForm() {
 
           {userDeploymentFee === 0n && <Countdown />}
 
-          <Button type='submit' disabled={isDeployERC404Loading}>
-            {isDeployERC404Loading ? (
-              <div className='flex items-center gap-x-2.5'>
-                <Loader2 className='h-5 w-5 animate-spin' />
-                <span>Deploying collection</span>
-              </div>
-            ) : (
-              'Deploy collection'
-            )}
-          </Button>
+          {isConnected ? (
+            <Button type='submit' disabled={isDeployERC404Loading}>
+              {isDeployERC404Loading ? (
+                <div className='flex items-center gap-x-2.5'>
+                  <Loader2 className='h-5 w-5 animate-spin' />
+                  <span>Deploying collection</span>
+                </div>
+              ) : (
+                'Deploy collection'
+              )}
+            </Button>
+          ) : (
+            <WalletButton type='button' />
+          )}
         </div>
       </form>
     </Form>
