@@ -9,7 +9,6 @@ import type { Abi } from 'viem';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
@@ -17,6 +16,7 @@ import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import WalletButton from '@/components/navbar/wallet-button';
+import StyledLink from '@/components/styled-link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -158,11 +158,13 @@ export default function DeployContractForm() {
           <>
             <p>Collection deployed successfully.</p>
             {explorer ? (
-              <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/address/${deploymentAddress}`} target='_blank'>
-                  View the collection on {explorer.name}.
-                </Link>
-              </Button>
+              <StyledLink
+                variant='link'
+                href={`${explorer.url}/address/${deploymentAddress}`}
+                target='_blank'
+              >
+                View the collection on {explorer.name}.
+              </StyledLink>
             ) : null}
             <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
           </>

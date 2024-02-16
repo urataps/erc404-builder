@@ -6,13 +6,13 @@ import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits, isAddress, parseUnits } from 'viem';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
+import StyledLink from '@/components/styled-link';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -135,11 +135,9 @@ export default function MintDialog({
           <>
             <p>NFTs minted successfully.</p>
             {explorer ? (
-              <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/tx/${txHash}`} target='_blank'>
-                  View the transaction on {explorer.name}.
-                </Link>
-              </Button>
+              <StyledLink variant='link' href={`${explorer.url}/tx/${txHash}`} target='_blank'>
+                View the transaction on {explorer.name}.
+              </StyledLink>
             ) : null}
             <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
           </>
