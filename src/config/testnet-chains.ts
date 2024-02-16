@@ -40,6 +40,6 @@ const testnetChainsConfig = {
   }
 };
 
-const testnetChains = Object.values(testnetChainsConfig);
+const chains = Object.values(testnetChainsConfig);
 
-export { EChainsName, testnetChains };
+export { EChainsName, chains };

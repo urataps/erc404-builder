@@ -14,7 +14,7 @@ import factoryAbi from '@/artifacts/Factory.json';
 import WalletButton from '@/components/navbar/wallet-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { mainnetChains } from '@/config/mainnet-chains';
+import { chains } from '@/config/chains';
 import { ERoutesName, ERoutesPath } from '@/constants/routes';
 import useReadContract from '@/custom-hooks/use-read-contract';
 
@@ -24,7 +24,7 @@ export default function CollectionsList() {
   const chainId = useChainId();
   const { isConnected, address } = useAccount();
   const activeChain = useMemo(
-    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
+    () => chains.find((chain) => chain.network.id === chainId) ?? chains[0],
     [chainId]
   );
 

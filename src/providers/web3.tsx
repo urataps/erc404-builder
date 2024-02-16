@@ -8,12 +8,12 @@ import type { Chain } from 'wagmi/chains';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import { createConfig, WagmiProvider } from 'wagmi';
 
-import { mainnetChains } from '@/config/mainnet-chains';
+import { chains } from '@/config/chains';
 
 import QueryClientProvider from './query-client';
 
-const testnetNetworks = mainnetChains.map((chain) => chain.network);
-const chains: [Chain, ...Chain[]] = [testnetNetworks[0]!, ...testnetNetworks.slice(1)];
+const betworks = chains.map((chain) => chain.network);
+const chainsConfig: [Chain, ...Chain[]] = [betworks[0]!, ...betworks.slice(1)];
 
 const config = createConfig(
   getDefaultConfig({
@@ -21,7 +21,7 @@ const config = createConfig(
     appDescription: 'Your App Description',
     appIcon: 'https://family.co/logo.png',
     appUrl: 'https://family.co',
-    chains,
+    chains: chainsConfig,
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? ''
   })
 );

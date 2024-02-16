@@ -31,7 +31,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
-import { EChainsName, mainnetChains } from '@/config/mainnet-chains';
+import { chains, EChainsName } from '@/config/chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
 import useWriteContract from '@/custom-hooks/use-write-contract';
 import { mapWalletErrorsToMessage } from '@/lib/errors-mapper';
@@ -75,7 +75,7 @@ export default function DeployContractForm() {
   const { isPending: isSwitchLoading, switchChainAsync } = useSwitchChain();
 
   const activeChain = useMemo(
-    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
+    () => chains.find((chain) => chain.network.id === chainId) ?? chains[0],
     [chainId]
   );
   const explorer = useMemo(() => activeChain?.network.blockExplorers.default, [activeChain]);
@@ -187,7 +187,7 @@ export default function DeployContractForm() {
       return;
     }
 
-    const chain = mainnetChains.find((chain) => chain.name === value);
+    const chain = chains.find((chain) => chain.name === value);
 
     if (!chain) {
       return;
@@ -314,7 +314,7 @@ export default function DeployContractForm() {
               <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
-                  {mainnetChains.map((chain) => (
+                  {chains.map((chain) => (
                     <FormItem
                       key={chain.name}
                       className={cn(

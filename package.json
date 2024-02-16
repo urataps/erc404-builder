@@ -11,15 +11,17 @@
     "url": "https://github.com/doinel1a/next-ts-shadcn-ui"
   },
   "scripts": {
-    "postinstall": "husky && playwright install",
-    "dev": "next dev",
-    "build": "next build",
+    "postinstall": "husky & playwright install",
+    "dev": "npm run copy:testnet-chains & next dev",
+    "build": "npm run copy:mainnet-chains & next build",
     "preview": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier --write **/**/*.{html,css,scss,js,cjs,mjs,ts,tsx}",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "copy:testnet-chains": "cpy ./src/config/testnet-chains.ts ./src/config --flat --rename=chains.ts",
+    "copy:mainnet-chains": "cpy ./src/config/mainnet-chains.ts ./src/config --flat --rename=chains.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -63,6 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "10.4.17",
+    "cpy-cli": "^5.0.0",
     "cssnano": "^6.0.3",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",

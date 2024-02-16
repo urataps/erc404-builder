@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 
-import type { EChainsName } from '@/config/mainnet-chains';
+import type { EChainsName } from '@/config/chains';
 import type { Abi } from 'viem';
 
 import { formatUnits, parseEther } from 'viem';
@@ -9,7 +9,7 @@ import { useAccount, useChainId } from 'wagmi';
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast/use-toast';
-import { mainnetChains } from '@/config/mainnet-chains';
+import { chains } from '@/config/chains';
 import useEstimateGasFee from '@/custom-hooks/use-estimate-gas-fee';
 import { trimBigString } from '@/lib/utils';
 
@@ -28,7 +28,7 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
   const { address } = useAccount();
   const chainId = useChainId();
   const activeChain = useMemo(
-    () => mainnetChains.find((chain) => chain.name === chainName) ?? mainnetChains[0],
+    () => chains.find((chain) => chain.name === chainName) ?? chains[0],
     [chainName]
   );
 
