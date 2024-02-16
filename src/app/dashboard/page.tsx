@@ -14,7 +14,11 @@ export const metadata = {
 export default function Dashboard() {
   return (
     <WithSignTAC>
-      <Section title='Collections' className='relative h-full'>
+      <Section
+        title='Collections'
+        subtitle='After you will deploy your collections, you will be able to manage them here'
+        className='relative h-full'
+      >
         <Collections />
       </Section>
     </WithSignTAC>

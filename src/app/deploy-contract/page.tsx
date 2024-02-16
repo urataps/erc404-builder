@@ -14,12 +14,10 @@ export const metadata = {
 export default function DeployContract() {
   return (
     <WithSignTAC>
-      <Section title='First, you will need to deploy a contract'>
-        <p>
-          You will need to deploy an ERC-404 contract onto the blockchain before you can create a
-          drop.
-        </p>
-
+      <Section
+        title='First, you will need to deploy a contract'
+        subtitle='You will need to deploy an ERC-404 contract onto the blockchain before you can mint a drop'
+      >
         <DeployContractForm />
       </Section>
     </WithSignTAC>

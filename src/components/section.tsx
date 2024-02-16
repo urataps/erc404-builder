@@ -27,10 +27,10 @@ export default function Section({
       {...otherProperties}
     >
       <header>
-        <h2 id={headerId} className='text-3xl font-medium'>
+        <h2 id={headerId} className='mb-1 text-3xl font-medium'>
           {title}
         </h2>
-        {subtitle ? <h3 className='text-2xl'>{subtitle}</h3> : null}
+        {subtitle ? <h3 className='text-xl'>{subtitle}</h3> : null}
       </header>
 
       {children}
