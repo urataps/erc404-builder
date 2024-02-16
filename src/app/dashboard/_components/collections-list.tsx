@@ -9,8 +9,8 @@ import { PencilRuler, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { useAccount, useChainId } from 'wagmi';
 
-import Banner from '@/app/_components/banner';
 import factoryAbi from '@/artifacts/Factory.json';
+import Banner from '@/components/banner';
 import WalletButton from '@/components/navbar/wallet-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
