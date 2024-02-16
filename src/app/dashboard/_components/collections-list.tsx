@@ -6,13 +6,12 @@ import type { PropsWithChildren } from 'react';
 import type { Abi } from 'viem';
 
 import { PencilRuler, ShieldAlert } from 'lucide-react';
-import Link from 'next/link';
 import { useAccount, useChainId } from 'wagmi';
 
-import Banner from '@/app/_components/banner';
 import factoryAbi from '@/artifacts/Factory.json';
+import Banner from '@/components/banner';
 import WalletButton from '@/components/navbar/wallet-button';
-import { Button } from '@/components/ui/button';
+import StyledLink from '@/components/styled-link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { chains } from '@/config/chains';
 import { ERoutesName, ERoutesPath } from '@/constants/routes';
@@ -70,9 +69,7 @@ export default function CollectionsList() {
         icon={PencilRuler}
         description='You have not created any collection yet.'
         ctaButton={
-          <Button asChild>
-            <Link href={ERoutesPath.deployContract}>{ERoutesName.deployContract}</Link>
-          </Button>
+          <StyledLink href={ERoutesPath.deployContract}>{ERoutesName.deployContract}</StyledLink>
         }
       />
     );
@@ -80,9 +77,9 @@ export default function CollectionsList() {
 
   return (
     <ul className='flex h-full w-full flex-col gap-y-2.5 overflow-y-scroll rounded-md border border-border p-5'>
-      <Button className='absolute right-0 top-0' asChild>
-        <Link href={ERoutesPath.deployContract}>{ERoutesName.deployContract} new collection</Link>
-      </Button>
+      <StyledLink href={ERoutesPath.deployContract} className='absolute right-0 top-0'>
+        {ERoutesName.deployContract} new collection
+      </StyledLink>
 
       {collections?.map((collection, index) => (
         <li key={index} className='h-16 w-full shrink-0 rounded-md border border-border p-2.5'>

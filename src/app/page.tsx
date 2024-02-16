@@ -1,9 +1,9 @@
 import React from 'react';
 
 import Main from '@/components/main';
+import StyledLink from '@/components/styled-link';
+import { ERoutesName, ERoutesPath } from '@/constants/routes';
 import WithSignTAC from '@/higher-order-components/with-sign-tac';
-
-import HomeCTAs from './_components/home-ctas';
 
 export default function Home() {
   return (
@@ -17,7 +17,15 @@ export default function Home() {
           Blockchains.
         </h2>
 
-        <HomeCTAs />
+        <div className='mt-10 flex gap-x-10'>
+          <StyledLink variant='default' href={ERoutesPath.deployContract}>
+            {ERoutesName.deployContract}
+          </StyledLink>
+
+          <StyledLink variant='secondary' href={ERoutesPath.dashboard}>
+            {ERoutesName.dashboard}
+          </StyledLink>
+        </div>
       </Main>
     </WithSignTAC>
   );

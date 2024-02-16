@@ -8,7 +8,10 @@ type TAside = ComponentProps<'aside'>;
 
 export default function Aside({ children, className, ...otherProperties }: TAside) {
   return (
-    <aside className={cn('flex flex-col gap-y-5', className)} {...otherProperties}>
+    <aside
+      className={cn('flex h-full flex-col gap-y-5 overflow-y-auto p-10', className)}
+      {...otherProperties}
+    >
       {children}
     </aside>
   );

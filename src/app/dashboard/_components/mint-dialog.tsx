@@ -5,14 +5,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits, isAddress, parseUnits } from 'viem';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
+import LoadingButton from '@/components/loading-button';
+import StyledLink from '@/components/styled-link';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -135,11 +135,9 @@ export default function MintDialog({
           <>
             <p>NFTs minted successfully.</p>
             {explorer ? (
-              <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/tx/${txHash}`} target='_blank'>
-                  View the transaction on {explorer.name}.
-                </Link>
-              </Button>
+              <StyledLink variant='link' href={`${explorer.url}/tx/${txHash}`} target='_blank'>
+                View the transaction on {explorer.name}.
+              </StyledLink>
             ) : null}
             <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
           </>
@@ -205,8 +203,8 @@ export default function MintDialog({
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center gap-x-1'>
-                    <FormLabel className='text-base font-semibold'>Recipient address</FormLabel>
-                    <FormMessage className='text-base font-semibold' />
+                    <FormLabel>Recipient address</FormLabel>
+                    <FormMessage className='leading-none' />
                   </div>
                   <FormControl>
                     <Input
@@ -226,8 +224,8 @@ export default function MintDialog({
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center gap-x-1'>
-                    <FormLabel className='text-base font-semibold'>Mint amount</FormLabel>
-                    <FormMessage className='text-base font-semibold' />
+                    <FormLabel>Mint amount</FormLabel>
+                    <FormMessage className='leading-none' />
                   </div>
                   <FormControl>
                     <Input placeholder='i.e. 50' className='placeholder:italic' {...field} />
@@ -236,16 +234,12 @@ export default function MintDialog({
               )}
             />
 
-            <Button type='submit' disabled={isMintLoading}>
-              {isMintLoading ? (
-                <div className='flex items-center gap-x-2.5'>
-                  <Loader2 className='h-5 w-5 animate-spin' />
-                  <span>Minting</span>
-                </div>
-              ) : (
-                'Mint'
-              )}
-            </Button>
+            <LoadingButton
+              type='submit'
+              isLoading={isMintLoading}
+              defaultContent='Mint'
+              loadingContent='Minting'
+            />
           </form>
         </Form>
       </DialogContent>

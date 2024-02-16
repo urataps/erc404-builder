@@ -3,11 +3,10 @@ import React from 'react';
 import type { ComponentProps } from 'react';
 
 import { PencilRuler } from 'lucide-react';
-import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
 
-import { Button } from './ui/button';
+import StyledLink from './styled-link';
 
 const email = 'hello@defibuilder.com';
 
@@ -28,11 +27,9 @@ export default function FeatureRequest({ className, ...otherProperties }: TFeatu
         <h3 className='font-semibold'>Are we missing some features?</h3>
         <p>
           Write us an email at:{' '}
-          <Button variant='link' className='px-0 py-0 text-inherit' asChild>
-            <Link href={`mailto:${email}`} className='font-medium'>
-              {email}
-            </Link>
-          </Button>
+          <StyledLink variant='link' href={`mailto:${email}`}>
+            {email}
+          </StyledLink>
         </p>
       </div>
     </div>

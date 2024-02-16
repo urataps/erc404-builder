@@ -3,10 +3,9 @@ import React from 'react';
 import type { ComponentProps } from 'react';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
 import theNftGeneratorLogo from '@/assets/images/the-nft-generator-logo.svg';
-import { Button } from '@/components/ui/button';
+import StyledLink from '@/components/styled-link';
 import { cn } from '@/lib/utils';
 
 const nftPartnerLinks = [
@@ -34,12 +33,12 @@ export default function NftPartners({ className, ...otherProperties }: TNftPartn
       <ul className='mt-5'>
         {nftPartnerLinks.map((partner) => (
           <li key={partner.name}>
-            <Button variant='link' className='px-0 py-0 text-foreground' asChild>
-              <Link href={partner.link} className='flex gap-x-2.5 text-sm'>
+            <StyledLink variant='link' href={partner.link} target='_blank'>
+              <div className='flex gap-x-2.5'>
                 <Image src={partner.logo} alt={`${partner.name}'s logo`} width={25} height={25} />
-                {partner.name}
-              </Link>
-            </Button>
+                <span>{partner.name}</span>
+              </div>
+            </StyledLink>
           </li>
         ))}
       </ul>

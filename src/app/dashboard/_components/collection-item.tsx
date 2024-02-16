@@ -5,12 +5,11 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import type { ComponentProps } from 'react';
 import type { Abi } from 'viem';
 
-import Link from 'next/link';
 import { formatUnits } from 'viem';
 import { useChainId } from 'wagmi';
 
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
-import { Button } from '@/components/ui/button';
+import StyledLink from '@/components/styled-link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { chains } from '@/config/chains';
 import useReadContract from '@/custom-hooks/use-read-contract';
@@ -150,11 +149,13 @@ export default function CollectionItem({ collectionAddress }: TCollectionItem) {
         skeletonClassName='w-[25%]'
         isLoading={isCollectionLoading}
       >
-        <Button variant='link' className='h-min px-0 py-0 text-foreground' asChild>
-          <Link href={`${explorer?.url}/address/${collectionAddress}`} target='_blank'>
-            {displayCollectionAddress}
-          </Link>
-        </Button>
+        <StyledLink
+          variant='link'
+          href={`${explorer?.url}/address/${collectionAddress}`}
+          target='_blank'
+        >
+          {displayCollectionAddress}
+        </StyledLink>
       </Column>
 
       <MintDialog

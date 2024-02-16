@@ -7,18 +7,17 @@ import React, { useEffect, useMemo } from 'react';
 import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
+import LoadingButton from '@/components/loading-button';
 import WalletButton from '@/components/navbar/wallet-button';
+import StyledLink from '@/components/styled-link';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -158,11 +157,13 @@ export default function DeployContractForm() {
           <>
             <p>Collection deployed successfully.</p>
             {explorer ? (
-              <Button variant='link' className='h-min px-0 py-0' asChild>
-                <Link href={`${explorer.url}/address/${deploymentAddress}`} target='_blank'>
-                  View the collection on {explorer.name}.
-                </Link>
-              </Button>
+              <StyledLink
+                variant='link'
+                href={`${explorer.url}/address/${deploymentAddress}`}
+                target='_blank'
+              >
+                View the collection on {explorer.name}.
+              </StyledLink>
             ) : null}
             <span className='absolute bottom-0 left-0 h-2 w-full bg-green-400' />
           </>
@@ -241,8 +242,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Token name</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Token name</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. DeFi Builder' className='placeholder:italic' {...field} />
@@ -258,8 +259,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Token symbol</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Token symbol</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. DFB' className='placeholder:italic' {...field} />
@@ -275,8 +276,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Total supply</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Total supply</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input placeholder='i.e. 1000' className='placeholder:italic' {...field} />
@@ -292,8 +293,8 @@ export default function DeployContractForm() {
           render={({ field }) => (
             <FormItem>
               <div className='flex items-center gap-x-1'>
-                <FormLabel className='text-base font-semibold'>Base URI</FormLabel>
-                <FormMessage className='text-base font-semibold' />
+                <FormLabel>Base URI</FormLabel>
+                <FormMessage className='leading-none' />
               </div>
               <FormControl>
                 <Input
@@ -311,7 +312,7 @@ export default function DeployContractForm() {
           name='chain'
           render={({ field }) => (
             <FormItem className='overflow-x-auto pb-5'>
-              <FormLabel className='text-base font-semibold'>Blockchain</FormLabel>
+              <FormLabel>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
                 <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
                   {chains.map((chain) => (
@@ -398,16 +399,12 @@ export default function DeployContractForm() {
           {userDeploymentFee === 0n && <Countdown />}
 
           {isConnected ? (
-            <Button type='submit' disabled={isDeployERC404Loading}>
-              {isDeployERC404Loading ? (
-                <div className='flex items-center gap-x-2.5'>
-                  <Loader2 className='h-5 w-5 animate-spin' />
-                  <span>Deploying collection</span>
-                </div>
-              ) : (
-                'Deploy collection'
-              )}
-            </Button>
+            <LoadingButton
+              type='submit'
+              isLoading={isDeployERC404Loading}
+              defaultContent='Deploy collection'
+              loadingContent='Deploying collection'
+            />
           ) : (
             <WalletButton type='button' />
           )}
