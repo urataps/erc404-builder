@@ -25,7 +25,11 @@ export default function Navbar() {
 
           {routes.map((route) => (
             <li key={route.name}>
-              <StyledLink variant='link' href={route.path} className='text-primary'>
+              <StyledLink
+                variant='link'
+                href={route.path}
+                className='text-base font-medium text-primary'
+              >
                 {route.name}
               </StyledLink>
             </li>

@@ -26,11 +26,7 @@ export default function StyledLink({
   return (
     <Button
       variant={variant}
-      className={cn(
-        'text-base',
-        { 'h-fit px-0 py-0 text-foreground': variant === 'link' },
-        className
-      )}
+      className={cn({ 'h-fit px-0 py-0 text-foreground': variant === 'link' }, className)}
       asChild
       {...otherButtonProperties}
     >
