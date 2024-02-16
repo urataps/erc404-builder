@@ -5,22 +5,24 @@ import React, { useEffect, useMemo } from 'react';
 import type { PropsWithChildren } from 'react';
 import type { Abi } from 'viem';
 
+import { PencilRuler, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { useAccount, useChainId } from 'wagmi';
 
+import Banner from '@/app/_components/banner';
 import factoryAbi from '@/artifacts/Factory.json';
+import WalletButton from '@/components/navbar/wallet-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { mainnetChains } from '@/config/mainnet-chains';
 import { ERoutesName, ERoutesPath } from '@/constants/routes';
 import useReadContract from '@/custom-hooks/use-read-contract';
 
-import CollectionEmpty from './collection-empty';
 import CollectionItem from './collection-item';
 
 export default function CollectionsList() {
   const chainId = useChainId();
-  const { address } = useAccount();
+  const { isConnected, address } = useAccount();
   const activeChain = useMemo(
     () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
     [chainId]
@@ -40,6 +42,16 @@ export default function CollectionsList() {
     }
   }, [activeChain, address, readContract]);
 
+  if (!isConnected) {
+    return (
+      <Banner
+        icon={ShieldAlert}
+        description='Connect your wallet to view your deployed collections, if any.'
+        ctaButton={<WalletButton />}
+      />
+    );
+  }
+
   if (isLoading) {
     return (
       <ListContainer>
@@ -54,9 +66,15 @@ export default function CollectionsList() {
 
   if (!collections || collections.length === 0) {
     return (
-      <ListContainer>
-        <CollectionEmpty />
-      </ListContainer>
+      <Banner
+        icon={PencilRuler}
+        description='You have not created any collection yet.'
+        ctaButton={
+          <Button asChild>
+            <Link href={ERoutesPath.deployContract}>{ERoutesName.deployContract}</Link>
+          </Button>
+        }
+      />
     );
   }
 
