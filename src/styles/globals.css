@@ -24,6 +24,9 @@
     --input: 220 13% 91%;
     --ring: 263.4 70% 50.4%;
     --radius: 0.5rem;
+    --scrollbar-bg: 0 0% 94%;
+    --scrollbar-thumb: 0 0% 52%;
+    --scrollbar-thumb-hover: 0 0% 42%;
   }
 
   .dark {
@@ -46,12 +49,31 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 263.4 70% 50.4%;
+    --scrollbar-bg: 0 0% 9%;
+    --scrollbar-thumb: 0 0% 58%;
+    --scrollbar-thumb-hover: 0 0% 47%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[hsl(var(--scrollbar-bg))];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-sm bg-[hsl(var(--scrollbar-thumb))];
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-[hsl(var(--scrollbar-thumb-hover))];
   }
 
   html,
