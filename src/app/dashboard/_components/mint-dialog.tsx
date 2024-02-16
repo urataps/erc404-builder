@@ -5,13 +5,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { formatUnits, isAddress, parseUnits } from 'viem';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import erc404ManagedUri from '@/artifacts/ERC404ManagedURI.json';
+import LoadingButton from '@/components/loading-button';
 import StyledLink from '@/components/styled-link';
 import { Button } from '@/components/ui/button';
 import {
@@ -234,16 +234,12 @@ export default function MintDialog({
               )}
             />
 
-            <Button type='submit' disabled={isMintLoading}>
-              {isMintLoading ? (
-                <div className='flex items-center gap-x-2.5'>
-                  <Loader2 className='h-5 w-5 animate-spin' />
-                  <span>Minting</span>
-                </div>
-              ) : (
-                'Mint'
-              )}
-            </Button>
+            <LoadingButton
+              type='submit'
+              isLoading={isMintLoading}
+              defaultContent='Mint'
+              loadingContent='Minting'
+            />
           </form>
         </Form>
       </DialogContent>

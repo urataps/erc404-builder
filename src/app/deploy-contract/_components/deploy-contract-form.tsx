@@ -7,7 +7,6 @@ import React, { useEffect, useMemo } from 'react';
 import type { Abi } from 'viem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
@@ -15,10 +14,10 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { z } from 'zod';
 
 import factoryAbi from '@/artifacts/Factory.json';
+import LoadingButton from '@/components/loading-button';
 import WalletButton from '@/components/navbar/wallet-button';
 import StyledLink from '@/components/styled-link';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -400,16 +399,12 @@ export default function DeployContractForm() {
           {userDeploymentFee === 0n && <Countdown />}
 
           {isConnected ? (
-            <Button type='submit' disabled={isDeployERC404Loading}>
-              {isDeployERC404Loading ? (
-                <div className='flex items-center gap-x-2.5'>
-                  <Loader2 className='h-5 w-5 animate-spin' />
-                  <span>Deploying collection</span>
-                </div>
-              ) : (
-                'Deploy collection'
-              )}
-            </Button>
+            <LoadingButton
+              type='submit'
+              isLoading={isDeployERC404Loading}
+              defaultContent='Deploy collection'
+              loadingContent='Deploying collection'
+            />
           ) : (
             <WalletButton type='button' />
           )}
