@@ -19,11 +19,10 @@ type TWithSignTAC = PropsWithChildren;
 export default function WithSignTAC({ children }: TWithSignTAC) {
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
-
-  const activeChain = useMemo(() => {
-    const chain = mainnetChains.find((chain) => chain.network.id === chainId);
-    return chain ?? mainnetChains[0];
-  }, [chainId]);
+  const activeChain = useMemo(
+    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
+    [chainId]
+  );
 
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
   const { toast } = useToast();
