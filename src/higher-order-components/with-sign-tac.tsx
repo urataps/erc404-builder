@@ -11,7 +11,7 @@ import { createWalletClient, custom, verifyMessage } from 'viem';
 import { useAccountEffect, useChainId, useDisconnect } from 'wagmi';
 
 import { useToast } from '@/components/ui/toast/use-toast';
-import { mainnetChains } from '@/config/mainnet-chains';
+import { chains } from '@/config/chains';
 
 type TWithSignTAC = PropsWithChildren;
 
@@ -20,7 +20,7 @@ export default function WithSignTAC({ children }: TWithSignTAC) {
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
   const activeChain = useMemo(
-    () => mainnetChains.find((chain) => chain.network.id === chainId) ?? mainnetChains[0],
+    () => chains.find((chain) => chain.network.id === chainId) ?? chains[0],
     [chainId]
   );
 
