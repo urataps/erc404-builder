@@ -13,7 +13,10 @@ import Navbar from '@/components/navbar/navbar';
 import { Toaster } from '@/components/ui/toast/toaster';
 import RootProvider from '@/providers/root';
 
+const appURL = new URL(`https://${config.metadata.domain}`);
+
 export const metadata: Metadata = {
+  metadataBase: appURL,
   title: config.metadata.title,
   description: config.metadata.description,
   keywords: config.metadata.keywords,
@@ -24,13 +27,11 @@ export const metadata: Metadata = {
     follow: true
   },
   openGraph: {
-    url: `https://${config.metadata.domain}`,
+    url: appURL,
     type: 'website',
     title: config.metadata.title,
     description: config.metadata.description,
-    images: {
-      url: `https://${config.metadata.domain}/${config.metadata.ogImage}`
-    }
+    images: config.metadata.ogImage
   },
   other: {
     'google-site-verification': 'au3_ZmG9kVHgAkYvYNIM_cZgrLfWv2ZtEnHSv8JiN0E'
