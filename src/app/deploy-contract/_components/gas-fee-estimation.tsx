@@ -4,7 +4,7 @@ import type { EChainsName } from '@/config/chains';
 import type { Abi } from 'viem';
 
 import { createPublicClient, formatUnits, http } from 'viem';
-import { useAccount, useChainId } from 'wagmi';
+import { useChainId } from 'wagmi';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,7 +25,6 @@ type TGasFeeEstimation = {
 };
 
 export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
-  const { address } = useAccount();
   const chainId = useChainId();
   const activeChain = useMemo(
     () => chains.find((chain) => chain.name === chainName) ?? chains[0],
@@ -65,7 +64,7 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
   }, [activeChain]);
 
   useEffect(() => {
-    if (activeChain && address && deploymentFee !== null) {
+    if (activeChain && deploymentFee !== null) {
       estimateGasFee(
         activeChain.network,
         factoryAbi.abi as Abi,
@@ -76,7 +75,7 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
         deploymentFee
       );
     }
-  }, [activeChain, address, chainId, deploymentFee, estimateGasFee]);
+  }, [activeChain, chainId, deploymentFee, estimateGasFee]);
 
   useEffect(() => {
     if (estimateGasFeeError) {
