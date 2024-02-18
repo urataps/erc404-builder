@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { TWalletError } from '@/lib/errors-mapper';
-import type { Abi, PublicClient, WalletClient } from 'viem';
+import type { Abi, PublicClient } from 'viem';
 
-import { createPublicClient, createWalletClient, custom, http } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { useChainId } from 'wagmi';
 
 import { chains } from '@/config/chains';
@@ -17,7 +17,6 @@ export default function useReadContract<R>() {
   );
 
   const [publicClient, setPublicClient] = useState<PublicClient | null>(null);
-  const [walletClient, setWalletClient] = useState<WalletClient | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<TWalletError | null>(null);
@@ -30,13 +29,7 @@ export default function useReadContract<R>() {
         transport: http()
       });
 
-      const walletClient = createWalletClient({
-        chain: activeChain?.network,
-        transport: custom(window.ethereum)
-      });
-
       setPublicClient(publicClient);
-      setWalletClient(walletClient);
     }
   }, [activeChain]);
 
@@ -47,7 +40,7 @@ export default function useReadContract<R>() {
       contractAddress: `0x${string}`,
       arguments_?: string[]
     ) => {
-      if (!publicClient || !walletClient) {
+      if (!publicClient) {
         return;
       }
 
@@ -76,12 +69,11 @@ export default function useReadContract<R>() {
         console.error('ERROR READING CONTRACT', functionName, error);
       }
     },
-    [publicClient, walletClient]
+    [publicClient]
   );
 
   return {
     publicClient,
-    walletClient,
     isLoading,
     errorMessage,
     response,
