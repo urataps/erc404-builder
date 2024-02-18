@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import type { EChainsName } from '@/config/chains';
 import type { Abi } from 'viem';
 
-import { formatUnits, parseEther } from 'viem';
-import { useAccount, useChainId } from 'wagmi';
+import { createPublicClient, formatUnits, http } from 'viem';
+import { useChainId } from 'wagmi';
 
 import factoryAbi from '@/artifacts/Factory.json';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,7 +25,6 @@ type TGasFeeEstimation = {
 };
 
 export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
-  const { address } = useAccount();
   const chainId = useChainId();
   const activeChain = useMemo(
     () => chains.find((chain) => chain.name === chainName) ?? chains[0],
@@ -33,6 +32,7 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
   );
 
   const { toast } = useToast();
+  const [deploymentFee, setDeploymentFee] = useState<bigint | null>(null);
 
   const {
     isLoading: isEstimateGasFeeLoading,
@@ -42,7 +42,29 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
   } = useEstimateGasFee();
 
   useEffect(() => {
-    if (activeChain && address) {
+    if (deploymentFee === null && activeChain) {
+      async function fetchDeploymentFee(chain: (typeof chains)[0]) {
+        const publicClient = createPublicClient({
+          chain: chain.network,
+          transport: http()
+        });
+
+        const deploymentFee = await publicClient.readContract({
+          // prettier-ignore
+          abi: [{type: 'function',name: 'deploymentFee',inputs: [],outputs: [{ name: '', type: 'uint128', internalType: 'uint128' }],stateMutability: 'view'}],
+          address: chain.contractAddress,
+          functionName: 'deploymentFee'
+        });
+
+        setDeploymentFee(deploymentFee);
+      }
+
+      fetchDeploymentFee(activeChain);
+    }
+  }, [activeChain]);
+
+  useEffect(() => {
+    if (activeChain && deploymentFee !== null) {
       estimateGasFee(
         activeChain.network,
         factoryAbi.abi as Abi,
@@ -50,10 +72,10 @@ export default function GasFeeEstimation({ chainName }: TGasFeeEstimation) {
         activeChain.contractAddress,
         activeChain.gasEstimatorAddress,
         dummyArguments,
-        parseEther('50')
+        deploymentFee
       );
     }
-  }, [activeChain, address, chainId, estimateGasFee]);
+  }, [activeChain, chainId, deploymentFee, estimateGasFee]);
 
   useEffect(() => {
     if (estimateGasFeeError) {
