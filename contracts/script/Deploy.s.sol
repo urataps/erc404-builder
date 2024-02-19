@@ -8,12 +8,12 @@ import { console } from "forge-std/src/console.sol";
 contract Deploy is BaseScript {
     Factory public factory;
 
-    Factory.FreePeriod public freePeriod = Factory.FreePeriod({ start: 0, end: 1_708_088_400 });
+    Factory.FreePeriod public freePeriod = Factory.FreePeriod({ start: 0, end: 0 });
 
     function run() public broadcast {
         // Polygon = 30e18 MATIC
         // BNB = 0.1e18 BNB
         // LINEA & ARBITRUM = 0.01e18 ETH
-        new Factory(0x5B3B2c5dfCAfeB4bf46Cfc3141e36E793f4C6fcd, 0.01e18, broadcaster, freePeriod);
+        new Factory(0x5B3B2c5dfCAfeB4bf46Cfc3141e36E793f4C6fcd, 0.00e18, broadcaster, freePeriod);
     }
 }
