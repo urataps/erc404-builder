@@ -48,11 +48,6 @@ This repository is ideal for front-end developers who want to build modern, fast
 ### Start developing:
 
 - Get the repository:
-  - click **"Use this template"** &nbsp; or &nbsp; **"Fork"** button <br /> alternately
-  - **clone** the repository through your terminal: <br />
-    ```bash
-    git clone https://github.com/doinel1a/next-ts-shadcn-ui YOUR-PROJECT-NAME
-    ```
 - Open your terminal or code editor to the path your project is located, and run:
 
   |                                                  | **npm**           | **pnpm**       | **yarn**       |
@@ -128,16 +123,6 @@ Please check the [**contributing guide**][code-of-conduct] for details on how to
     3.  Commit your changes: `git commit -m "fix: BUG FIX"`;
     4.  Push your new branch: `git push origin fix/BUG-FIX`;
 4.  **Open a new [pull request][pulls];**
-
-[Back to :arrow_up:](#next-typescript--shadcnui--template "Back to 'Table of contents' section")
-
----
-
-## :bookmark_tabs: License
-
-All logos and trademarks are the property of their respective owners.  
-Everything else is distributed under the **MIT License** .  
-See the [LICENSE][license] file for more informations.
 
 [Back to :arrow_up:](#next-typescript--shadcnui--template "Back to 'Table of contents' section")
 

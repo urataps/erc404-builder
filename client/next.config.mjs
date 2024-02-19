@@ -14,6 +14,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'img.cryptorank.io'
+      },
+      {
+        protocol: 'https',
+        hostname: 'dex-bin.bnbstatic.com'
       }
     ]
   },

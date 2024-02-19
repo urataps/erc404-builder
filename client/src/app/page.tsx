@@ -13,8 +13,7 @@ export default function Home() {
         <h2 className='text-center text-2xl font-medium'>
           Generate a custom ERC404 token using tested Smart Contracts. <br />
           Deploy ERC404 directly from your wallet using metamask. <br />
-          Create ERC404 tokens on Binance Smart Chain, Linea, Arbitrum and many other EVM
-          Blockchains.
+          Create ERC404 tokens on BNB and opBNB blockchains.
         </h2>
 
         <div className='mt-10 flex gap-x-10'>

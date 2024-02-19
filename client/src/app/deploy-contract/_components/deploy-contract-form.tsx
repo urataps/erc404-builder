@@ -65,7 +65,7 @@ const formSchema = z.object({
     .trim()
     .refine((value) => !Number.isNaN(Number(value)), { message: 'must be a number' })
     .refine((value) => Number(value) >= 1, { message: 'must be 1 or more' }),
-  chain: z.enum([EChainsName.arbitrum, EChainsName.bsc, EChainsName.linea, EChainsName.polygon])
+  chain: z.enum([EChainsName.bsc, EChainsName.opBNB])
 });
 
 export default function DeployContractForm() {
@@ -88,7 +88,7 @@ export default function DeployContractForm() {
       tokenSymbol: '',
       totalSupply: '',
       baseUri: '',
-      chain: EChainsName.linea
+      chain: EChainsName.bsc
     }
   });
 
@@ -298,7 +298,7 @@ export default function DeployContractForm() {
               </div>
               <FormControl>
                 <Input
-                  placeholder='i.e. ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB/'
+                  placeholder='i.e. https://gnfd-testnet-sp-1.nodereal.io/view/example/'
                   className='placeholder:italic'
                   {...field}
                 />
@@ -314,7 +314,7 @@ export default function DeployContractForm() {
             <FormItem className='overflow-x-auto pb-5'>
               <FormLabel>Blockchain</FormLabel>
               <FormControl className='flex gap-x-5'>
-                <RadioGroup defaultValue={EChainsName.arbitrum} onValueChange={field.onChange}>
+                <RadioGroup defaultValue={EChainsName.bsc} onValueChange={field.onChange}>
                   {chains.map((chain) => (
                     <FormItem
                       key={chain.name}

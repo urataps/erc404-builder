@@ -16,7 +16,7 @@ import { trimBigString } from '@/lib/utils';
 const dummyArguments = [
   'DeFi Builder', // name
   'DFB', // symbol
-  'ipfs://QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB/', // baseURI
+  'https://gnfd-testnet-sp-1.nodereal.io/view/example/', // baseURI
   '10000' // totalNFTSupply
 ];
 

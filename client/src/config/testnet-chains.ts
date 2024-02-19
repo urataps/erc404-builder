@@ -1,4 +1,5 @@
-import { Address } from 'viem';
+import type { Address } from 'viem';
+
 import { bscTestnet, opBNBTestnet } from 'wagmi/chains';
 
 import baseChains from './base-chains';
