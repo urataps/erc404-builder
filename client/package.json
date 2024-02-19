@@ -13,7 +13,7 @@
   "scripts": {
     "postinstall": "playwright install",
     "dev": "npm run copy:testnet-chains & next dev",
-    "build": "npm run copy:mainnet-chains & next build",
+    "build": "npm run copy:testnet-chains & next build",
     "preview": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

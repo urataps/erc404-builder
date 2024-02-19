@@ -10,6 +10,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 's3.coinmarketcap.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.cryptorank.io'
       }
     ]
   },

@@ -11,6 +11,10 @@ const baseChains = {
     logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
     badge: 'Most popular'
   },
+  opBNB: {
+    logo: 'https://img.cryptorank.io/coins/op_bnb1687420235160.png',
+    badge: 'Cheaper'
+  },
   Polygon: {
     logo: 'https://s3.coinmarketcap.com/static-gravity/image/b8db9a2ac5004c1685a39728cdf4e100.png',
     badge: 'Cheaper'
