@@ -1,8 +1,8 @@
 {
   "lang": "en-EN",
-  "name": "DeFi Builder - Free ERC404 token generator",
+  "name": "DeFi Builder - BNB Hackathon",
   "short_name": "Free ERC404 token generator",
-  "description": "Create a free ERC404 token and deploy on most blockchains. Support Binance Smart Chain, Arbitrum, Linea and Polygon. Deploy free ERC404 token using metamask wallet.",
+  "description": "Create a free ERC404 token and deploy on BNB and opBNB blockchains using your web3 wallet.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
