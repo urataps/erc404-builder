@@ -14,7 +14,7 @@ import useEstimateGasFee from '@/custom-hooks/use-estimate-gas-fee';
 import { trimBigString } from '@/lib/utils';
 
 const dummyArguments = [
-  'DeFi Builder', // name
+  'DFB', // name
   'DFB', // symbol
   'https://gnfd-testnet-sp-1.nodereal.io/view/example/', // baseURI
   '10000' // totalNFTSupply

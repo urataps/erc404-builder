@@ -62,7 +62,3 @@ forge test
 ## Contributing 🤝
 
 We welcome contributions to our project! If you have suggestions for improvements or encounter any issues, please open an issue or submit a pull request.
-
-## License 📄
-
-DeFi Builder © 2024 by DeFi Builder is licensed under CC BY-NC-SA 4.0. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/

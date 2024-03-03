@@ -76,9 +76,9 @@ export default function WithSignTAC({ children }: TWithSignTAC) {
 
 function generateTACMessage(address: string) {
   return `
-Welcome to DeFi Builder!
+Welcome to 404 Factory!
   
-Click to sign in and accept DeFi Builder Terms and Conditions (https://defibuilder.com/terms-and-conditions) and Privacy Policy (https://defibuilder.com/privacy-policy/).
+Click to sign in and accept 404 Factory Terms and Conditions and Privacy Policy.
   
 This request will not trigger a blockchain transaction or cost any gas fees.
   

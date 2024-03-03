@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 import StyledLink from './styled-link';
 
-const email = 'hello@defibuilder.com';
+const email = 'alexe@forgenie.com';
 
 type TFeatureRequest = ComponentProps<'div'>;
 

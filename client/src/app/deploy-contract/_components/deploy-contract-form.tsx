@@ -246,7 +246,7 @@ export default function DeployContractForm() {
                 <FormMessage className='leading-none' />
               </div>
               <FormControl>
-                <Input placeholder='i.e. DeFi Builder' className='placeholder:italic' {...field} />
+                <Input placeholder='i.e. 404 Factory' className='placeholder:italic' {...field} />
               </FormControl>
             </FormItem>
           )}

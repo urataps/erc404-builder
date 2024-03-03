@@ -12,14 +12,14 @@ export default function Logo() {
     <Link href={ERoutesPath.home}>
       <Image
         src={logoLight}
-        alt="DeFi Builder's logo"
+        alt="404 Factory's logo"
         width={190}
         height={30}
         className='hidden dark:block'
       />
       <Image
         src={logoDark}
-        alt="DeFi Builder's logo"
+        alt="404 Factory's logo"
         width={190}
         height={30}
         className='block dark:hidden'
