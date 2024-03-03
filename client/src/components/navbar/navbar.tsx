@@ -28,7 +28,7 @@ export default function Navbar() {
               <StyledLink
                 variant='link'
                 href={route.path}
-                className='text-base font-medium text-primary'
+                className='text-base font-medium text-secondary-foreground'
               >
                 {route.name}
               </StyledLink>

@@ -9,7 +9,7 @@ import WithSignTAC from '@/higher-order-components/with-sign-tac';
 export default function Home() {
   return (
     <WithSignTAC>
-      <Main className='mx-auto max-w-7xl justify-center gap-y-2.5'>
+      <Main className='mx-auto max-w-7xl justify-center gap-y-2.5 p-0 lg:p-0'>
         <header className='bg-grid-white/[0.02] relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-md antialiased'>
           <Spotlight className='-top-40 left-0 md:left-60' fill='white' />
 
